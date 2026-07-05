@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
 <script>
 /* Apply saved theme before first paint. Default is always light mode. */
 (function(){try{
@@ -21,33 +21,33 @@
    Palette
    ------------------------------------------------------------ */
 :root{
-  /* ---- LIGHT THEME (default) ---- */
-  --ink:#F6FAF3;            /* page background */
-  --ink-2:#EBF2E6;          /* raised surface */
+  /* ---- LIGHT THEME (default): white, sky blue, green, grey, black ---- */
+  --ink:#FFFFFF;            /* page background — crisp white */
+  --ink-2:#F4F6F8;          /* raised surface — neutral grey-blue */
   --ink-3:#FFFFFF;          /* card surface */
   --hunter:#123D2A;         /* brand hunter green (fixed — used on self-contained dark chips) */
-  --volt:#B7F24C;           /* electric lime — energy accent (backgrounds/borders/small swatches) */
-  --volt-text:#3E7A1B;      /* accessible deep green for lime used as *text* on light surfaces */
-  --emerald:#2FB170;        /* signal green */
-  --amber:#B9740A;          /* charging energy (deepened for light-bg text contrast) */
-  --sky:#1477A6;            /* transit accent (deepened for light-bg text contrast) */
+  --volt:#34D399;           /* clean green — backgrounds/borders/small swatches */
+  --volt-text:#047857;      /* deep readable green for text on light surfaces */
+  --emerald:#10B981;        /* signal green, paired with volt in gradients */
+  --amber:#B45309;          /* charging energy, deepened for light-bg text contrast */
+  --sky:#0284C7;            /* sky blue accent */
   --coral:#FF7A59;          /* horizon warmth */
   --violet:#7C6CF0;         /* dusk sky */
-  --text:#0E241A;
-  --muted:#4B6759;
-  --faint:#6C8577;
-  --line:rgba(18,61,42,.13);
-  --glass:rgba(246,250,243,.72);
-  --tint-02:rgba(18,61,42,.035);
-  --tint-03:rgba(18,61,42,.05);
-  --tint-04:rgba(18,61,42,.06);
-  --grad-hero-h1:linear-gradient(110deg,#3E7A1B,#1D8F5B 55%,#1477A6);
-  --grad-stat:linear-gradient(120deg,#3E7A1B,#1477A6);
-  --grad-plat-h1:linear-gradient(110deg,#3E7A1B,#1477A6);
-  --stats-bg:linear-gradient(180deg,#E3EFDC,var(--ink));
-  --industries-bg:linear-gradient(180deg,var(--ink),#EAF2E3,var(--ink));
+  --text:#111417;           /* near-black, neutral (not green-tinted) */
+  --muted:#4B5563;          /* neutral grey */
+  --faint:#6B7280;          /* lighter neutral grey */
+  --line:rgba(15,23,31,.10);
+  --glass:rgba(255,255,255,.78);
+  --tint-02:rgba(15,23,31,.035);
+  --tint-03:rgba(15,23,31,.05);
+  --tint-04:rgba(15,23,31,.065);
+  --grad-hero-h1:linear-gradient(110deg,#047857,#0369A1 60%,#0284C7);
+  --grad-stat:linear-gradient(120deg,#047857,#0284C7);
+  --grad-plat-h1:linear-gradient(110deg,#047857,#0284C7);
+  --stats-bg:linear-gradient(180deg,#EEF2F6,var(--ink));
+  --industries-bg:linear-gradient(180deg,var(--ink),#EEF2F6,var(--ink));
   --radius:22px;
-  --shadow:0 24px 50px -20px rgba(18,61,42,.16);
+  --shadow:0 24px 50px -20px rgba(15,23,31,.14);
   --maxw:1220px;
 }
 html[data-theme="dark"]{
@@ -959,7 +959,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
 (function(){
   var html=document.documentElement;
   var metaColor=document.getElementById('metaThemeColor');
-  var LIGHT_COLOR='#F6FAF3',DARK_COLOR='#071A12';
+  var LIGHT_COLOR='#FFFFFF',DARK_COLOR='#071A12';
   function isDark(){return html.getAttribute('data-theme')==='dark';}
   function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
   function setTheme(dark){

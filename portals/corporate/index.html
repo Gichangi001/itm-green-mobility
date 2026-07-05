@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
 <script>
 (function(){try{
   if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
@@ -16,12 +16,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
-  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
-  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
-  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
-  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
-  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1280px;
+  --ink:#FFFFFF;--ink-2:#F4F6F8;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#34D399;--volt-text:#047857;--emerald:#10B981;--amber:#B45309;--sky:#0284C7;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#111417;--muted:#4B5563;--faint:#6B7280;
+  --line:rgba(15,23,31,.10);--glass:rgba(255,255,255,.78);
+  --tint-02:rgba(15,23,31,.035);--tint-03:rgba(15,23,31,.05);--tint-04:rgba(15,23,31,.065);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(15,23,31,.14);--maxw:1280px;
 }
 html[data-theme="dark"]{
   --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
@@ -279,10 +279,10 @@ var TABS = [
   { label:'Employees', render:function(){ return '\
     <h3>Employees</h3>\
     <table class="tbl"><tr><th>Employee</th><th>Department</th><th>Trips (month)</th><th>Status</th></tr>\
-    <tr><td>Nadège S.</td><td>Sales</td><td>18</td><td style="color:#2FB170">Active</td></tr>\
-    <tr><td>Roland A.</td><td>Operations</td><td>14</td><td style="color:#2FB170">Active</td></tr>\
-    <tr><td>Chantal K.</td><td>Finance</td><td>9</td><td style="color:#2FB170">Active</td></tr>\
-    <tr><td>Didier M.</td><td>Sales</td><td>2</td><td style="color:#B9740A">New</td></tr>\
+    <tr><td>Nadège S.</td><td>Sales</td><td>18</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>Roland A.</td><td>Operations</td><td>14</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>Chantal K.</td><td>Finance</td><td>9</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>Didier M.</td><td>Sales</td><td>2</td><td style="color:var(--amber)">New</td></tr>\
     </table>'; } },
   { label:'Ride policies', render:function(){ return '\
     <h3>Ride policies</h3>\
@@ -294,16 +294,16 @@ var TABS = [
   { label:'Spend', render:function(){ return '\
     <h3>Budget vs spend — this month</h3>\
     <table class="tbl"><tr><th>Department</th><th>Budget</th><th>Spend</th><th>Status</th></tr>\
-    <tr><td>Sales</td><td>800,000f</td><td>740,000f</td><td style="color:#2FB170">On track</td></tr>\
-    <tr><td>Operations</td><td>600,000f</td><td>612,000f</td><td style="color:#B9740A">Over budget</td></tr>\
-    <tr><td>Finance</td><td>300,000f</td><td>210,000f</td><td style="color:#2FB170">On track</td></tr>\
+    <tr><td>Sales</td><td>800,000f</td><td>740,000f</td><td style="color:var(--emerald)">On track</td></tr>\
+    <tr><td>Operations</td><td>600,000f</td><td>612,000f</td><td style="color:var(--amber)">Over budget</td></tr>\
+    <tr><td>Finance</td><td>300,000f</td><td>210,000f</td><td style="color:var(--emerald)">On track</td></tr>\
     </table>'; } },
   { label:'Invoices', render:function(){ return '\
     <h3>Monthly invoices</h3>\
     <table class="tbl"><tr><th>Invoice</th><th>Period</th><th>Amount</th><th>Status</th></tr>\
-    <tr><td>INV-2026-06</td><td>June 2026</td><td>1,860,000f</td><td style="color:#B9740A">Due in 12 days</td></tr>\
-    <tr><td>INV-2026-05</td><td>May 2026</td><td>1,710,000f</td><td style="color:#2FB170">Paid</td></tr>\
-    <tr><td>INV-2026-04</td><td>April 2026</td><td>1,590,000f</td><td style="color:#2FB170">Paid</td></tr>\
+    <tr><td>INV-2026-06</td><td>June 2026</td><td>1,860,000f</td><td style="color:var(--amber)">Due in 12 days</td></tr>\
+    <tr><td>INV-2026-05</td><td>May 2026</td><td>1,710,000f</td><td style="color:var(--emerald)">Paid</td></tr>\
+    <tr><td>INV-2026-04</td><td>April 2026</td><td>1,590,000f</td><td style="color:var(--emerald)">Paid</td></tr>\
     </table>'; } },
   { label:'Carbon', render:function(){ return '\
     <h3>Sustainability report</h3>\
@@ -372,7 +372,7 @@ buildTabs(); renderTab();
 
 (function(){
   var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
-  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  var LIGHT_COLOR='#FFFFFF', DARK_COLOR='#071A12';
   function isDark(){return html.getAttribute('data-theme')==='dark';}
   function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
   function setTheme(dark){

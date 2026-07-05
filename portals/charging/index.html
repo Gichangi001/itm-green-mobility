@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
 <script>
 (function(){try{
   if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
@@ -16,12 +16,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
-  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
-  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
-  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
-  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
-  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1280px;
+  --ink:#FFFFFF;--ink-2:#F4F6F8;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#34D399;--volt-text:#047857;--emerald:#10B981;--amber:#B45309;--sky:#0284C7;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#111417;--muted:#4B5563;--faint:#6B7280;
+  --line:rgba(15,23,31,.10);--glass:rgba(255,255,255,.78);
+  --tint-02:rgba(15,23,31,.035);--tint-03:rgba(15,23,31,.05);--tint-04:rgba(15,23,31,.065);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(15,23,31,.14);--maxw:1280px;
 }
 html[data-theme="dark"]{
   --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
@@ -279,16 +279,16 @@ var TABS = [
   { label:'Charger status', render:function(){ return '\
     <h3>Charger status — network</h3>\
     <table class="tbl"><tr><th>Station</th><th>Chargers</th><th>Available</th><th>Status</th></tr>\
-    <tr><td>Cotonou Central</td><td>8</td><td>2 free</td><td style="color:#2FB170">Online</td></tr>\
-    <tr><td>Cotonou Airport</td><td>8</td><td>5 free</td><td style="color:#2FB170">Online</td></tr>\
-    <tr><td>Akpakpa</td><td>8</td><td>1 free</td><td style="color:#2FB170">Online</td></tr>\
-    <tr><td>Fidjrossè</td><td>8</td><td>0 free</td><td style="color:#B9740A">1 fault</td></tr>\
+    <tr><td>Cotonou Central</td><td>8</td><td>2 free</td><td style="color:var(--emerald)">Online</td></tr>\
+    <tr><td>Cotonou Airport</td><td>8</td><td>5 free</td><td style="color:var(--emerald)">Online</td></tr>\
+    <tr><td>Akpakpa</td><td>8</td><td>1 free</td><td style="color:var(--emerald)">Online</td></tr>\
+    <tr><td>Fidjrossè</td><td>8</td><td>0 free</td><td style="color:var(--amber)">1 fault</td></tr>\
     </table>'; } },
   { label:'Sessions', render:function(){ return '\
     <h3>Active &amp; recent sessions</h3>\
     <table class="tbl"><tr><th>Station · Bay</th><th>Vehicle</th><th>kWh so far</th><th>Status</th></tr>\
-    <tr><td>Central · Bay 3</td><td>AB 4471</td><td>12.4</td><td style="color:#2FB170">Charging</td></tr>\
-    <tr><td>Airport · Bay 1</td><td>AB 2290</td><td>8.1</td><td style="color:#2FB170">Charging</td></tr>\
+    <tr><td>Central · Bay 3</td><td>AB 4471</td><td>12.4</td><td style="color:var(--emerald)">Charging</td></tr>\
+    <tr><td>Airport · Bay 1</td><td>AB 2290</td><td>8.1</td><td style="color:var(--emerald)">Charging</td></tr>\
     <tr><td>Akpakpa · Bay 6</td><td>AB 5581</td><td>21.0</td><td>Completed</td></tr>\
     </table>'; } },
   { label:'kWh & revenue', render:function(){ return '\
@@ -310,7 +310,7 @@ var TABS = [
   { label:'Maintenance', render:function(){ return '\
     <h3>Faults &amp; maintenance</h3>\
     <table class="tbl"><tr><th>Station · Bay</th><th>Issue</th><th>Reported</th><th>Status</th></tr>\
-    <tr><td>Fidjrossè · Bay 4</td><td>Connector fault</td><td>Today</td><td style="color:#B9740A">Technician en route</td></tr>\
+    <tr><td>Fidjrossè · Bay 4</td><td>Connector fault</td><td>Today</td><td style="color:var(--amber)">Technician en route</td></tr>\
     <tr><td>Central · Bay 7</td><td>Screen unresponsive</td><td>Yesterday</td><td>Scheduled</td></tr>\
     </table>'; } }
 ];
@@ -373,7 +373,7 @@ buildTabs(); renderTab();
 
 (function(){
   var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
-  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  var LIGHT_COLOR='#FFFFFF', DARK_COLOR='#071A12';
   function isDark(){return html.getAttribute('data-theme')==='dark';}
   function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
   function setTheme(dark){

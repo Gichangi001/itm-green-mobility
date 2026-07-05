@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
 <script>
 (function(){try{
   if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
@@ -16,12 +16,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
-  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
-  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
-  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
-  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
-  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1280px;
+  --ink:#FFFFFF;--ink-2:#F4F6F8;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#34D399;--volt-text:#047857;--emerald:#10B981;--amber:#B45309;--sky:#0284C7;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#111417;--muted:#4B5563;--faint:#6B7280;
+  --line:rgba(15,23,31,.10);--glass:rgba(255,255,255,.78);
+  --tint-02:rgba(15,23,31,.035);--tint-03:rgba(15,23,31,.05);--tint-04:rgba(15,23,31,.065);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(15,23,31,.14);--maxw:1280px;
 }
 html[data-theme="dark"]{
   --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
@@ -279,10 +279,10 @@ var TABS = [
   { label:'Vehicles', render:function(){ return '\
     <h3>Fleet overview</h3>\
     <table class="tbl"><tr><th>Vehicle</th><th>Driver</th><th>Battery</th><th>Status</th></tr>\
-    <tr><td>AB 4471 · Sedan</td><td>Julien T.</td><td>91%</td><td style="color:#2FB170">Active</td></tr>\
-    <tr><td>AB 2290 · Hatchback</td><td>Aïcha D.</td><td>76%</td><td style="color:#2FB170">Active</td></tr>\
-    <tr><td>AB 5581 · SUV</td><td>—</td><td>44%</td><td style="color:#B9740A">Charging</td></tr>\
-    <tr><td>AB 3120 · Sedan</td><td>Kossi H.</td><td>12%</td><td style="color:#B9740A">In maintenance</td></tr>\
+    <tr><td>AB 4471 · Sedan</td><td>Julien T.</td><td>91%</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>AB 2290 · Hatchback</td><td>Aïcha D.</td><td>76%</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>AB 5581 · SUV</td><td>—</td><td>44%</td><td style="color:var(--amber)">Charging</td></tr>\
+    <tr><td>AB 3120 · Sedan</td><td>Kossi H.</td><td>12%</td><td style="color:var(--amber)">In maintenance</td></tr>\
     </table>'; } },
   { label:'Battery', render:function(){ return '\
     <h3>Battery health</h3>\
@@ -295,7 +295,7 @@ var TABS = [
   { label:'Maintenance', render:function(){ return '\
     <h3>Maintenance schedule</h3>\
     <table class="tbl"><tr><th>Vehicle</th><th>Issue</th><th>Scheduled</th><th>Status</th></tr>\
-    <tr><td>AB 3120</td><td>Battery degradation check</td><td>Today</td><td style="color:#B9740A">In progress</td></tr>\
+    <tr><td>AB 3120</td><td>Battery degradation check</td><td>Today</td><td style="color:var(--amber)">In progress</td></tr>\
     <tr><td>AB 5581</td><td>Tire rotation</td><td>Tomorrow</td><td>Scheduled</td></tr>\
     <tr><td>AB 2290</td><td>Routine 10,000km service</td><td>Next week</td><td>Scheduled</td></tr>\
     </table>'; } },
@@ -309,10 +309,10 @@ var TABS = [
   { label:'Profit', render:function(){ return '\
     <h3>Profit per vehicle — this week</h3>\
     <table class="tbl"><tr><th>Vehicle</th><th>Revenue</th><th>Costs</th><th>Profit</th></tr>\
-    <tr><td>AB 4471</td><td>62,000f</td><td>24,600f</td><td style="color:#2FB170">37,400f</td></tr>\
-    <tr><td>AB 2290</td><td>54,000f</td><td>21,200f</td><td style="color:#2FB170">32,800f</td></tr>\
-    <tr><td>AB 5581</td><td>38,000f</td><td>26,000f</td><td style="color:#2FB170">12,000f</td></tr>\
-    <tr><td>AB 3120</td><td>19,000f</td><td>22,400f</td><td style="color:#B9740A">-3,400f</td></tr>\
+    <tr><td>AB 4471</td><td>62,000f</td><td>24,600f</td><td style="color:var(--emerald)">37,400f</td></tr>\
+    <tr><td>AB 2290</td><td>54,000f</td><td>21,200f</td><td style="color:var(--emerald)">32,800f</td></tr>\
+    <tr><td>AB 5581</td><td>38,000f</td><td>26,000f</td><td style="color:var(--emerald)">12,000f</td></tr>\
+    <tr><td>AB 3120</td><td>19,000f</td><td>22,400f</td><td style="color:var(--amber)">-3,400f</td></tr>\
     </table>'; } }
 ];
 
@@ -374,7 +374,7 @@ buildTabs(); renderTab();
 
 (function(){
   var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
-  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  var LIGHT_COLOR='#FFFFFF', DARK_COLOR='#071A12';
   function isDark(){return html.getAttribute('data-theme')==='dark';}
   function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
   function setTheme(dark){
