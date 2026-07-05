@@ -120,21 +120,23 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .dash-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap}
 .dash-topbar h2{font-size:22px;font-weight:700}
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.kpi{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:18px}
+.kpi{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:18px;transition:transform .25s,box-shadow .25s,border-color .25s}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 14px 28px -16px rgba(15,23,31,.25);border-color:var(--volt-text)}
 .kpi b{display:block;font-family:'Sora';font-size:22px;font-weight:700}
 .kpi small{font-size:12px;color:var(--muted)}
 .kpi .delta{font-size:11.5px;color:var(--emerald);font-weight:600}
 .dash-body{display:grid;grid-template-columns:210px 1fr;gap:20px;align-items:start}
 .tabs{display:flex;flex-direction:column;gap:4px;position:sticky;top:90px}
 .tab-btn{text-align:left;padding:11px 14px;border-radius:11px;border:1px solid transparent;background:none;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:.2s}
-.tab-btn:hover{background:var(--tint-04)}
+.tab-btn:hover{background:var(--tint-04);transform:translateX(2px)}
 .tab-btn.active{background:var(--tint-04);border-color:var(--line);color:var(--text);font-weight:700}
-.panel{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-height:380px}
+.panel{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-height:380px;transition:box-shadow .25s}
 .panel h3{font-size:18px;font-weight:700;margin-bottom:14px}
 .tbl{width:100%;border-collapse:collapse;font-size:13.5px}
 .tbl th{text-align:left;color:var(--faint);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:1px solid var(--line)}
-.tbl td{padding:11px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--line);transition:background-color .15s}
 .tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--tint-02)}
 .heat{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
 .heat div{height:34px;border-radius:7px}
 .heat-legend{display:flex;gap:14px;margin-top:14px;font-size:12px;color:var(--muted);align-items:center}
@@ -177,7 +179,7 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
   <div class="wrap">
     <span class="eyebrow">Web portal · Admin</span>
     <h1>Management Dashboard — live simulation</h1>
-    <p>Get admin access set up, then explore the same command center leadership uses: revenue, operations, driver productivity, a live demand heat map and governance.</p>
+    <p>Get admin access set up, then explore the same command center leadership uses: revenue, every cab and trip in motion, riders, drivers, a live demand heat map and governance — all clearly separated, nothing buried.</p>
   </div>
 </header>
 
@@ -209,7 +211,7 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
     <div class="dash-guide">
       <div class="gi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v.01M11 12h1v5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
       <div class="dash-guide-steps">
-        <div><b>1. Pick a tab</b>Revenue, Ops, Drivers, Heat map or Roles — on the left.</div>
+        <div><b>1. Pick a tab</b>Revenue, Cabs &amp; trips, Riders, Drivers, Heat map or Roles.</div>
         <div><b>2. Scan the KPIs</b>Top row always shows today's headline numbers.</div>
         <div><b>3. Drill in</b>Each panel's table is the detail behind the summary.</div>
       </div>
@@ -284,21 +286,39 @@ var TABS = [
     <tr><td>Green Charge</td><td>180,000f</td><td>15%</td><td style="color:var(--emerald)">▲ 3%</td></tr>\
     <tr><td>Green Fleet</td><td>90,000f</td><td>7%</td><td style="color:var(--amber)">▼ 2%</td></tr>\
     </table>'; } },
-  { label:'Operations', render:function(){ return '\
-    <h3>Live operations</h3>\
+  { label:'Cabs & trips', render:function(){ return '\
+    <h3>Cabs on the road — right now</h3>\
+    <table class="tbl"><tr><th>Vehicle</th><th>Driver</th><th>Status</th><th>Fare</th></tr>\
+    <tr><td>AB 4471 · Sedan</td><td>Julien T.</td><td style="color:var(--emerald)">En route</td><td>2,400f</td></tr>\
+    <tr><td>AB 2290 · Hatchback</td><td>Aïcha D.</td><td style="color:var(--emerald)">En route</td><td>1,800f</td></tr>\
+    <tr><td>AB 5581 · SUV</td><td>—</td><td style="color:var(--amber)">Charging</td><td>—</td></tr>\
+    <tr><td>AB 3120 · Sedan</td><td>Kossi H.</td><td style="color:var(--sky)">Idle</td><td>—</td></tr>\
+    </table>\
+    <h3 style="margin-top:18px">Trip health — today</h3>\
     <table class="tbl"><tr><th>Metric</th><th>Value</th><th>Status</th></tr>\
     <tr><td>Avg wait time</td><td>3m 40s</td><td style="color:var(--emerald)">Healthy</td></tr>\
-    <tr><td>Open support tickets</td><td>7</td><td style="color:var(--amber)">Monitor</td></tr>\
-    <tr><td>Cancelled trips (today)</td><td>2.1%</td><td style="color:var(--emerald)">Healthy</td></tr>\
-    <tr><td>SOS triggers (today)</td><td>0</td><td style="color:var(--emerald)">Clear</td></tr>\
+    <tr><td>Cancelled trips</td><td>2.1%</td><td style="color:var(--emerald)">Healthy</td></tr>\
+    <tr><td>SOS triggers</td><td>0</td><td style="color:var(--emerald)">Clear</td></tr>\
     </table>'; } },
-  { label:'Driver productivity', render:function(){ return '\
+  { label:'Riders', render:function(){ return '\
+    <h3>Riders — today</h3>\
+    <table class="tbl"><tr><th>Rider</th><th>Trips (month)</th><th>Avg rating given</th><th>Status</th></tr>\
+    <tr><td>Aïcha Dossou</td><td>14</td><td>4.9★</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>Marcelline A.</td><td>9</td><td>4.8★</td><td style="color:var(--emerald)">Active</td></tr>\
+    <tr><td>Fabrice K.</td><td>2</td><td>5.0★</td><td style="color:var(--sky)">New</td></tr>\
+    <tr><td>Ines B.</td><td>6</td><td>3.9★</td><td style="color:var(--amber)">Flagged for review</td></tr>\
+    </table>\
+    <div class="kpi-row" style="margin-top:14px;margin-bottom:0">\
+      <div class="kpi"><b>3,140</b><small>Active riders (month)</small></div>\
+      <div class="kpi"><b>212</b><small>New riders (month)</small></div>\
+    </div>'; } },
+  { label:'Drivers', render:function(){ return '\
     <h3>Top drivers today</h3>\
-    <table class="tbl"><tr><th>Driver</th><th>Trips</th><th>Rating</th><th>Earnings</th></tr>\
-    <tr><td>Julien T.</td><td>11</td><td>4.9★</td><td>14,200f</td></tr>\
-    <tr><td>Marcelline A.</td><td>10</td><td>4.9★</td><td>13,600f</td></tr>\
-    <tr><td>Kossi H.</td><td>9</td><td>4.8★</td><td>12,050f</td></tr>\
-    <tr><td>Ines B.</td><td>8</td><td>4.8★</td><td>10,900f</td></tr>\
+    <table class="tbl"><tr><th>Driver</th><th>Status</th><th>Trips</th><th>Rating</th><th>Earnings</th></tr>\
+    <tr><td>Julien T.</td><td style="color:var(--emerald)">On trip</td><td>11</td><td>4.9★</td><td>14,200f</td></tr>\
+    <tr><td>Marcelline A.</td><td style="color:var(--sky)">Online</td><td>10</td><td>4.9★</td><td>13,600f</td></tr>\
+    <tr><td>Kossi H.</td><td style="color:var(--faint)">Idle</td><td>9</td><td>4.8★</td><td>12,050f</td></tr>\
+    <tr><td>Ines B.</td><td style="color:var(--faint)">Offline</td><td>8</td><td>4.8★</td><td>10,900f</td></tr>\
     </table>'; } },
   { label:'Heat map', render:function(){
       var colors=['#e9f4e1','#cfe6bf','#a9d489','#7dbf5a','#4fa532','#2f8a17'];
