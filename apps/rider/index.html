@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<script>
+(function(){try{
+  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
+}catch(e){}})();
+</script>
+<title>Rider App — ITM Green Mobility</title>
+<meta name="description" content="Rider App simulation — book electric rides, track your driver and pay in a tap." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
+  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
+  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1220px;
+}
+html[data-theme="dark"]{
+  --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#B7F24C;--emerald:#2FB170;--amber:#FFB020;--sky:#58C7F2;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;
+  --line:rgba(183,242,76,.14);--glass:rgba(9,28,19,.55);
+  --tint-02:rgba(255,255,255,.02);--tint-03:rgba(255,255,255,.03);--tint-04:rgba(255,255,255,.04);
+  --shadow:0 30px 60px -20px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--ink);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;transition:background-color .35s ease,color .35s ease}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.1}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:16px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,var(--hunter),#061c12);border:1px solid var(--line)}
+.brand .mark svg{width:20px;height:20px}
+.brand .name{font-family:'Sora';font-weight:700;font-size:16px}
+.brand .name span{color:var(--volt-text)}
+.back-link{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:500;padding:9px 14px;border-radius:999px;border:1px solid var(--line);transition:.2s}
+.back-link:hover{border-color:var(--volt-text);color:var(--text)}
+.back-link svg{width:15px;height:15px}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:0 0 auto;border-radius:11px;border:1px solid var(--line);background:var(--tint-04);color:var(--text);cursor:pointer}
+.theme-toggle svg{width:18px;height:18px}
+.theme-toggle .i-sun{display:none}.theme-toggle .i-moon{display:block}
+html[data-theme="dark"] .theme-toggle .i-sun{display:block}
+html[data-theme="dark"] .theme-toggle .i-moon{display:none}
+.nav-actions{display:flex;align-items:center;gap:10px}
+
+/* header */
+.page-head{padding:44px 0 8px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--volt-text);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--volt-text);opacity:.7}
+.page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:14px 0 10px}
+.page-head p{color:var(--muted);max-width:600px;font-size:16px}
+
+/* layout */
+.stage{padding:36px 0 90px}
+.stage-grid{display:grid;grid-template-columns:280px 1fr 340px;gap:28px;align-items:start}
+
+/* step rail */
+.rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:90px}
+.rail-item{display:flex;align-items:flex-start;gap:12px;padding:11px 6px;border-radius:12px;transition:.25s}
+.rail-item .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--faint);background:var(--ink-3);transition:.25s}
+.rail-item .label{font-size:13.5px;color:var(--faint);font-weight:500;padding-top:3px;transition:.25s}
+.rail-item.active .dot{border-color:var(--volt-text);color:var(--volt-text);background:var(--tint-04);box-shadow:0 0 0 4px var(--tint-04)}
+.rail-item.active .label{color:var(--text);font-weight:700}
+.rail-item.done .dot{background:var(--volt-text);border-color:var(--volt-text);color:#052012}
+.rail-item.done .label{color:var(--muted)}
+.rail-item.done .dot svg{width:13px;height:13px}
+
+/* value panel (center) */
+.value-card{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:32px;min-height:420px;display:flex;flex-direction:column}
+.value-tag{display:inline-flex;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#052012;background:var(--volt);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.value-card h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.value-card p{color:var(--muted);font-size:15.5px;max-width:440px}
+.value-checks{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.value-checks .vc{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+.value-checks .vc.show{opacity:1;transform:none}
+.value-checks .vc .tick{width:20px;height:20px;border-radius:50%;background:var(--volt-text);color:#052012;display:grid;place-items:center;flex:0 0 auto}
+.value-checks .vc .tick svg{width:12px;height:12px}
+.stage-actions{margin-top:auto;padding-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap}
+.btn-primary{background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;box-shadow:0 12px 26px -8px rgba(183,242,76,.45)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:var(--tint-04);border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* phone */
+.phone-col{position:sticky;top:90px;display:flex;justify-content:center}
+.phone{width:300px;height:620px;border-radius:42px;background:linear-gradient(160deg,#182a20,#0c1810);border:8px solid #0a1710;box-shadow:var(--shadow);position:relative;overflow:hidden}
+html[data-theme="dark"] .phone{border-color:#000}
+.phone::before{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#000;border-radius:14px;z-index:5}
+.phone-screen{position:absolute;inset:0;background:linear-gradient(180deg,#fbfdf9,#eef4e8);display:flex;flex-direction:column}
+.p-status{display:flex;justify-content:space-between;align-items:center;padding:20px 22px 6px;font-size:12px;font-weight:600;color:#123D2A;font-family:'JetBrains Mono',monospace}
+.p-body{flex:1;padding:20px 20px 26px;display:flex;flex-direction:column;overflow:hidden auto}
+.p-fade{animation:pfade .45s ease}
+@keyframes pfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.p-h{font-family:'Sora';font-weight:700;font-size:19px;color:#0E241A;margin-bottom:6px}
+.p-sub{font-size:12.5px;color:#4B6759;margin-bottom:18px}
+.p-field{background:#fff;border:1px solid rgba(18,61,42,.14);border-radius:13px;padding:12px 14px;margin-bottom:10px}
+.p-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#6C8577;margin-bottom:4px}
+.p-field .val{font-size:14.5px;font-weight:600;color:#0E241A}
+.p-otp{display:flex;gap:8px;margin:14px 0 6px}
+.p-otp span{flex:1;height:52px;border-radius:12px;background:#fff;border:1px solid rgba(18,61,42,.14);display:grid;place-items:center;font-family:'JetBrains Mono';font-weight:700;font-size:19px;color:#0E241A}
+.p-chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.p-chip{font-size:12px;font-weight:600;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid rgba(18,61,42,.14);color:#0E241A}
+.p-chip.on{background:var(--volt);border-color:var(--volt);color:#052012}
+.p-card{background:#fff;border:1px solid rgba(18,61,42,.1);border-radius:14px;padding:14px;margin-bottom:10px}
+.p-driver{display:flex;gap:12px;align-items:center}
+.p-driver .av{width:46px;height:46px;border-radius:50%;background:linear-gradient(140deg,#123D2A,#0a2116);display:grid;place-items:center;color:#B7F24C;font-family:'Sora';font-weight:700;flex:0 0 auto}
+.p-driver .nm{font-weight:700;font-size:14.5px;color:#0E241A}
+.p-driver .meta{font-size:11.5px;color:#6C8577;display:flex;gap:8px;margin-top:2px;flex-wrap:wrap}
+.p-map{position:relative;height:170px;border-radius:14px;background:linear-gradient(160deg,#e2f0d8,#cfe6c2);overflow:hidden;margin-bottom:12px;border:1px solid rgba(18,61,42,.1)}
+.p-map .route{position:absolute;left:14%;right:14%;top:50%;height:3px;background:repeating-linear-gradient(90deg,#2FB170 0 8px,transparent 8px 16px);transform:translateY(-50%)}
+.p-map .pin{position:absolute;width:14px;height:14px;border-radius:50%;background:#2FB170;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.p-map .pin.a{left:12%;top:50%;transform:translate(-50%,-50%)}
+.p-map .pin.b{right:12%;top:50%;transform:translate(50%,-50%);background:#FF7A59}
+.p-map .car{position:absolute;top:50%;left:12%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:7px;background:#123D2A;color:#B7F24C;display:grid;place-items:center;animation:carmove 2.6s ease-in-out infinite}
+.p-map .car svg{width:12px;height:12px}
+@keyframes carmove{0%{left:12%}50%{left:70%}100%{left:12%}}
+.p-stat-row{display:flex;gap:8px;margin-bottom:10px}
+.p-stat{flex:1;background:#fff;border:1px solid rgba(18,61,42,.1);border-radius:12px;padding:10px 12px;text-align:center}
+.p-stat b{display:block;font-family:'Sora';font-size:16px;color:#0E241A}
+.p-stat small{font-size:10px;color:#6C8577}
+.p-stars{display:flex;gap:6px;justify-content:center;margin:18px 0}
+.p-stars svg{width:34px;height:34px;color:#e2e8e0;cursor:pointer;transition:.15s}
+.p-stars svg.on{color:#FFB020}
+.p-btn{margin-top:auto;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14.5px;padding:14px;border-radius:14px;text-align:center;border:none;cursor:pointer;font-family:inherit}
+.p-btn:active{transform:scale(.98)}
+.p-spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(18,61,42,.15);border-top-color:#2FB170;animation:spin .8s linear infinite;margin:30px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.p-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1}
+.p-badge-ok{width:64px;height:64px;border-radius:50%;background:var(--volt);color:#052012;display:grid;place-items:center;margin-bottom:16px}
+.p-badge-ok svg{width:30px;height:30px}
+.p-searching{font-size:13px;color:#4B6759;text-align:center;margin-top:10px}
+.p-leaf{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10.5px;color:#6C8577;letter-spacing:.05em}
+
+@media(max-width:1000px){
+  .stage-grid{grid-template-columns:1fr;gap:24px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
+  .rail-item{padding:8px 10px;background:var(--ink-3);border:1px solid var(--line);border-radius:999px}
+  .rail-item .label{display:none}
+  .phone-col{position:static;order:-1}
+}
+@media(max-width:480px){
+  .phone{width:260px;height:540px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#B7F24C"/></svg></div>
+      <div class="name">ITM <span>Green</span> Mobility</div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html#platforms">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to mobile apps
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Mobile app · Rider</span>
+    <h1>Rider App — live simulation</h1>
+    <p>Walk through the exact experience a rider gets: sign up, verify, then request, match, ride, pay and rate — a full electric trip, end to end.</p>
+  </div>
+</header>
+
+<section class="stage">
+  <div class="wrap stage-grid">
+    <!-- STEP RAIL -->
+    <nav class="rail" id="rail"></nav>
+
+    <!-- VALUE PANEL -->
+    <div class="value-card">
+      <span class="value-tag" id="valueTag">Onboarding</span>
+      <h2 id="valueTitle">Create your account</h2>
+      <p id="valueText">One phone number, no paperwork — you're a verified rider in under a minute.</p>
+      <div class="value-checks" id="valueChecks"></div>
+      <div class="stage-actions">
+        <button class="btn btn-primary" id="ctaBtn">Continue</button>
+        <button class="btn btn-ghost" id="restartBtn" style="display:none">Restart demo</button>
+        <a class="btn btn-ghost" id="backAppsBtn" href="../../index.html#platforms" style="display:none">Back to mobile apps</a>
+      </div>
+    </div>
+
+    <!-- PHONE -->
+    <div class="phone-col">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="p-status"><span>9:41</span><span>●●● Green Ride</span><span>86%</span></div>
+          <div class="p-body" id="phoneBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+var STEPS = [
+  {
+    rail:'Download & sign up', tag:'Onboarding', title:'Create your account',
+    text:"One phone number, no paperwork — you're a verified rider in under a minute.",
+    cta:'Continue',
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Welcome to Green Ride</div>\
+        <div class="p-sub">Create your rider account</div>\
+        <div class="p-field"><label>Full name</label><div class="val">Aïcha Dossou</div></div>\
+        <div class="p-field"><label>Phone number</label><div class="val mono">+229 97 •• •• 41</div></div>\
+        <button class="p-btn" id="pAction">Continue</button>\
+      </div>'; }
+  },
+  {
+    rail:'Verify your number', tag:'Onboarding', title:'Bank-grade verification',
+    text:'An SMS one-time code ties every account to a real, verified rider — safer for you and your driver.',
+    cta:'Verify',
+    checks:['Account created for Aïcha Dossou'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Enter the code</div>\
+        <div class="p-sub">Sent to +229 97 •• •• 41</div>\
+        <div class="p-otp"><span>4</span><span>2</span><span>0</span><span>7</span></div>\
+        <button class="p-btn" id="pAction">Verify</button>\
+      </div>'; }
+  },
+  {
+    rail:'Set home & payment', tag:'Onboarding', title:'Set up once, ride forever',
+    text:'Save home/work addresses and a default payment method so every future ride is a single tap.',
+    cta:'Save & continue',
+    checks:['Account created for Aïcha Dossou','Phone number verified'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Home & payment</div>\
+        <div class="p-sub">You can change these anytime</div>\
+        <div class="p-field"><label>Home address</label><div class="val">Rue 214, Cotonou</div></div>\
+        <div class="p-chip-row">\
+          <span class="p-chip on">Mobile money</span><span class="p-chip">Card</span><span class="p-chip">Wallet</span>\
+        </div>\
+        <button class="p-btn" id="pAction">Save &amp; continue</button>\
+      </div>'; }
+  },
+  {
+    rail:'Onboarding complete', tag:'Onboarding', title:"You're in.",
+    text:'Full KYC-lite verification, done. Your rider account is ready for its first electric trip.',
+    cta:'Book my first ride',
+    checks:['Account created for Aïcha Dossou','Phone number verified','Home address & payment saved'],
+    phone:function(){ return '\
+      <div class="p-fade p-center">\
+        <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>\
+        <div class="p-h">You&#39;re all set, Aïcha</div>\
+        <div class="p-sub">Ready to book your first ride</div>\
+        <button class="p-btn" id="pAction" style="margin-top:18px">Book my first ride</button>\
+      </div>'; }
+  },
+  {
+    rail:'Request a ride', tag:'Ride loop', title:'Upfront fares, no surprises',
+    text:'See your fare before you book. Pay by mobile money, card or wallet — your choice.',
+    cta:'Find a ride',
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Where to?</div>\
+        <div class="p-field"><label>Pickup</label><div class="val">Rue 214, Cotonou</div></div>\
+        <div class="p-field"><label>Destination</label><div class="val">Cotonou Airport</div></div>\
+        <div class="p-stat-row">\
+          <div class="p-stat"><b>2 400f</b><small>Upfront fare</small></div>\
+          <div class="p-stat"><b>18 min</b><small>Est. trip</small></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Find a ride</button>\
+      </div>'; }
+  },
+  {
+    rail:'Battery-aware match', tag:'Ride loop', title:'Matched with a fully-charged driver',
+    text:'Dispatch only matches drivers with enough battery range to complete your trip — no stranded rides.',
+    cta:'Track my driver',
+    searching:true,
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-spin"></div>\
+        <div class="p-searching">Finding a nearby electric driver…</div>\
+      </div>'; },
+    phoneAfter:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Driver found</div>\
+        <div class="p-card p-driver">\
+          <div class="av">JT</div>\
+          <div><div class="nm">Julien T.</div><div class="meta"><span>⭐ 4.9</span><span>🔋 91%</span><span>ETA 3 min</span></div></div>\
+        </div>\
+        <div class="p-field"><label>Vehicle</label><div class="val">Green EV · Sedan · AB 4471</div></div>\
+        <button class="p-btn" id="pAction">Track my driver</button>\
+      </div>'; }
+  },
+  {
+    rail:'Live trip & safety', tag:'Ride loop', title:'Tracked, shared, safe',
+    text:'Live GPS trip sharing and a one-tap SOS button, on every ride.',
+    cta:'Complete trip',
+    checks:['Upfront fare confirmed — 2 400f','Matched with Julien T. · 91% battery'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Trip in progress</div>\
+        <div class="p-map"><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+          <div class="car"><svg viewBox="0 0 24 24" fill="none"><path d="M5 16v-3l2-6c.3-1 1-1.6 2-1.6h6c1 0 1.7.6 2 1.6l2 6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>\
+        </div>\
+        <div class="p-stat-row">\
+          <div class="p-stat"><b>7 min</b><small>To destination</small></div>\
+          <div class="p-stat"><b>0g</b><small>CO₂ this trip</small></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Complete trip</button>\
+      </div>'; }
+  },
+  {
+    rail:'Auto-pay', tag:'Ride loop', title:'Paid automatically',
+    text:"Fare settles the second you arrive. No cash, no haggling.",
+    cta:'Rate your driver',
+    checks:['Trip completed safely with live tracking'],
+    processing:true,
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-spin"></div>\
+        <div class="p-searching">Processing payment…</div>\
+      </div>'; },
+    phoneAfter:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Paid ✓</div>\
+        <div class="p-card">\
+          <div class="p-field" style="border:none;padding:0;margin-bottom:6px"><label>Fare</label><div class="val">2 400f</div></div>\
+          <div class="p-field" style="border:none;padding:0;margin-bottom:6px"><label>Paid via</label><div class="val">Mobile money</div></div>\
+          <div class="p-field" style="border:none;padding:0"><label>Status</label><div class="val" style="color:#2FB170">Settled instantly</div></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Rate your driver</button>\
+      </div>'; }
+  },
+  {
+    rail:'Rate your driver', tag:'Ride loop', title:'Your feedback keeps quality high',
+    text:'Ratings feed directly into driver coaching and platform quality scores.',
+    cta:'Submit rating',
+    checks:['Fare paid instantly — 2 400f via Mobile money'],
+    phone:function(){ return '\
+      <div class="p-fade p-center">\
+        <div class="p-h">Rate Julien T.</div>\
+        <div class="p-stars" id="pStars">\
+          <svg class="on" data-i="1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
+          <svg class="on" data-i="2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
+          <svg class="on" data-i="3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
+          <svg class="on" data-i="4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
+          <svg class="on" data-i="5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
+        </div>\
+        <div class="p-chip-row" style="justify-content:center">\
+          <span class="p-chip on">Clean car</span><span class="p-chip on">Safe driving</span><span class="p-chip">On time</span>\
+        </div>\
+        <button class="p-btn" id="pAction" style="margin-top:16px">Submit rating</button>\
+      </div>'; }
+  },
+  {
+    rail:'Trip complete', tag:'Complete', title:'Zero-emission trip complete',
+    text:"You just saved roughly 1.2kg of CO₂ versus a petrol taxi. That's the Green Ride loop, every time.",
+    cta:null,
+    checks:['5-star rating submitted for Julien T.'],
+    phone:function(){ return '\
+      <div class="p-fade p-center">\
+        <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#052012"/></svg></div>\
+        <div class="p-h">Trip complete</div>\
+        <div class="p-sub">Thanks for riding clean, Aïcha</div>\
+        <div class="p-stat-row" style="margin-top:8px">\
+          <div class="p-stat"><b>1.2kg</b><small>CO₂ saved</small></div>\
+          <div class="p-stat"><b>2 400f</b><small>Total paid</small></div>\
+        </div>\
+        <div class="p-leaf">🌿 Powered by 100% electric fleet</div>\
+      </div>'; }
+  }
+];
+
+var idx = 0, rail = document.getElementById('rail'), phoneBody = document.getElementById('phoneBody');
+var valueTag=document.getElementById('valueTag'), valueTitle=document.getElementById('valueTitle'),
+    valueText=document.getElementById('valueText'), valueChecks=document.getElementById('valueChecks'),
+    ctaBtn=document.getElementById('ctaBtn'), restartBtn=document.getElementById('restartBtn'),
+    backAppsBtn=document.getElementById('backAppsBtn');
+
+function buildRail(){
+  rail.innerHTML = STEPS.map(function(s,i){
+    return '<div class="rail-item" data-i="'+i+'"><div class="dot">'+(i+1)+'</div><div class="label">'+s.rail+'</div></div>';
+  }).join('');
+}
+
+function renderChecks(list){
+  valueChecks.innerHTML = (list||[]).map(function(t){
+    return '<div class="vc"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>'+t+'</span></div>';
+  }).join('');
+  requestAnimationFrame(function(){
+    valueChecks.querySelectorAll('.vc').forEach(function(el,i){ setTimeout(function(){el.classList.add('show');}, i*120); });
+  });
+}
+
+function updateRailStates(){
+  rail.querySelectorAll('.rail-item').forEach(function(el){
+    var i = +el.dataset.i;
+    el.classList.remove('active','done');
+    if(i < idx) el.classList.add('done');
+    else if(i === idx) el.classList.add('active');
+  });
+  rail.querySelectorAll('.rail-item.done .dot').forEach(function(d){
+    d.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  });
+}
+
+function render(){
+  var step = STEPS[idx];
+  updateRailStates();
+  valueTag.textContent = step.tag;
+  valueTitle.textContent = step.title;
+  valueText.textContent = step.text;
+  renderChecks(step.checks);
+  phoneBody.innerHTML = step.phone();
+  wirePhoneAction(step);
+
+  if(step.cta){
+    ctaBtn.style.display='inline-flex'; ctaBtn.textContent = step.cta; ctaBtn.disabled = false;
+    restartBtn.style.display='none'; backAppsBtn.style.display='none';
+  } else {
+    ctaBtn.style.display='none';
+    restartBtn.style.display='inline-flex'; backAppsBtn.style.display='inline-flex';
+  }
+}
+
+function wirePhoneAction(step){
+  var pAction = document.getElementById('pAction');
+  var pStars = document.getElementById('pStars');
+  if(pStars){
+    pStars.querySelectorAll('svg').forEach(function(star){
+      star.addEventListener('click', function(){
+        var n = +star.dataset.i;
+        pStars.querySelectorAll('svg').forEach(function(s2){ s2.classList.toggle('on', +s2.dataset.i <= n); });
+      });
+    });
+  }
+  if(pAction){
+    pAction.addEventListener('click', function(){
+      if(step.searching || step.processing){
+        pAction.disabled = true;
+        setTimeout(function(){
+          phoneBody.innerHTML = step.phoneAfter();
+          wirePhoneAction(step);
+        }, 1400);
+      } else {
+        advance();
+      }
+    });
+  }
+}
+
+function advance(){
+  if(idx < STEPS.length - 1){ idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+}
+
+ctaBtn.addEventListener('click', function(){
+  var step = STEPS[idx];
+  if(step.searching || step.processing){ return; } // handled by in-phone button
+  advance();
+});
+restartBtn.addEventListener('click', function(){ idx = 0; render(); });
+
+buildRail();
+render();
+
+/* theme toggle (shared across site) */
+(function(){
+  var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
+  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  function isDark(){return html.getAttribute('data-theme')==='dark';}
+  function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
+  function setTheme(dark){
+    if(dark){html.setAttribute('data-theme','dark');}else{html.removeAttribute('data-theme');}
+    try{localStorage.setItem('itm-theme',dark?'dark':'light');}catch(e){}
+    syncMeta();
+  }
+  syncMeta();
+  document.getElementById('themeToggle').addEventListener('click', function(){ setTheme(!isDark()); });
+})();
+</script>
+</body>
+</html>
