@@ -361,34 +361,35 @@ function render(){
   valueTag.textContent = step.tag;
   valueTitle.textContent = step.title;
   valueText.textContent = step.text;
-  renderChecks(step.checks);
+  renderChecks(typeof step.checks === "function" ? step.checks() : step.checks);
   phoneBody.innerHTML = step.phone();
   wirePhoneAction(step);
   if(step.cta){
-    ctaBtn.style.display='inline-flex'; ctaBtn.textContent = step.cta; ctaBtn.disabled=false;
-    restartBtn.style.display='none'; backAppsBtn.style.display='none';
+    ctaBtn.style.display="inline-flex"; ctaBtn.textContent = step.cta;
+    ctaBtn.disabled = !!(step.searching || step.processing);
+    restartBtn.style.display="none"; backAppsBtn.style.display="none";
   } else {
-    ctaBtn.style.display='none';
-    restartBtn.style.display='inline-flex'; backAppsBtn.style.display='inline-flex';
+    ctaBtn.style.display="none";
+    restartBtn.style.display="inline-flex"; backAppsBtn.style.display="inline-flex";
+  }
+  if(step.searching || step.processing){
+    var stepAtStart = idx;
+    setTimeout(function(){
+      if(idx !== stepAtStart) return;
+      phoneBody.innerHTML = step.phoneAfter();
+      wirePhoneAction(step);
+      ctaBtn.disabled = false;
+    }, 1400);
   }
 }
 function wirePhoneAction(step){
-  var pAction = document.getElementById('pAction');
+  var pAction = document.getElementById("pAction");
   if(pAction){
-    pAction.addEventListener('click', function(){
-      if(step.searching || step.processing){
-        pAction.disabled = true;
-        setTimeout(function(){ phoneBody.innerHTML = step.phoneAfter(); wirePhoneAction(step); }, 1400);
-      } else { advance(); }
-    });
+    pAction.addEventListener("click", advance);
   }
 }
-function advance(){ if(idx < STEPS.length - 1){ idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); } }
-ctaBtn.addEventListener('click', function(){
-  var step = STEPS[idx];
-  if(step.searching || step.processing){ return; }
-  advance();
-});
+function advance(){ if(idx < STEPS.length - 1){ idx++; render(); window.scrollTo({top:0,behavior:"smooth"}); } }
+ctaBtn.addEventListener("click", advance);
 restartBtn.addEventListener('click', function(){ idx = 0; render(); });
 buildRail(); render();
 

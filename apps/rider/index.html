@@ -153,6 +153,37 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .p-searching{font-size:13px;color:#4B5563;text-align:center;margin-top:10px}
 .p-leaf{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10.5px;color:#6B7280;letter-spacing:.05em}
 
+.p-loc-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px solid rgba(15,23,31,.10);background:#fff;margin-bottom:8px;cursor:pointer;transition:.2s}
+.p-loc-chip.on{border-color:var(--volt-text);background:var(--tint-04)}
+.p-loc-chip .pi{width:28px;height:28px;border-radius:50%;background:var(--tint-04);display:grid;place-items:center;flex:0 0 auto;color:var(--volt-text);font-size:14px}
+.p-loc-chip .pt{flex:1}
+.p-loc-chip .pt b{display:block;font-size:13px;color:#111417}
+.p-loc-chip .pt small{font-size:10.5px;color:#6B7280}
+
+.p-vehicle{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid rgba(15,23,31,.10);border-radius:14px;padding:10px 12px;cursor:pointer;transition:.2s;margin-bottom:8px}
+.p-vehicle.sel{border-color:var(--volt-text);background:var(--tint-04)}
+.p-vehicle .vi{width:40px;height:40px;border-radius:10px;background:var(--tint-04);display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+.p-vehicle .vd{flex:1}
+.p-vehicle .vd .vn{font-weight:700;font-size:13.5px;color:#111417;display:flex;align-items:center;gap:6px}
+.p-vehicle .vd .vn .elec{font-size:9px;font-weight:700;color:var(--volt-text);background:var(--tint-04);padding:2px 6px;border-radius:6px;letter-spacing:.03em}
+.p-vehicle .vd .vs{font-size:11px;color:#6B7280}
+.p-vehicle .vp{text-align:right;flex:0 0 auto}
+.p-vehicle .vp b{display:block;font-size:14px;color:#111417}
+.p-vehicle .vp small{font-size:10.5px;color:#6B7280}
+
+.p-map{position:relative}
+.p-map .roads{position:absolute;inset:0;opacity:.4;background-image:repeating-linear-gradient(100deg,rgba(18,61,42,.14) 0 2px,transparent 2px 34px),repeating-linear-gradient(10deg,rgba(18,61,42,.10) 0 2px,transparent 2px 46px)}
+.p-map .pin-label{position:absolute;font-size:9px;font-weight:700;color:#123D2A;background:rgba(255,255,255,.9);padding:3px 7px;border-radius:7px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.p-map .pin-label.a{left:12%;top:calc(50% + 13px);transform:translateX(-50%)}
+.p-map .pin-label.b{right:12%;top:calc(50% + 13px);transform:translateX(50%)}
+.p-map .caption{position:absolute;bottom:7px;left:12px;font-size:9px;color:#4B5563;font-weight:700;letter-spacing:.04em}
+.p-map .eta-chip{position:absolute;top:10px;right:10px;background:#123D2A;color:#B7F24C;font-size:10.5px;font-weight:700;padding:5px 9px;border-radius:8px}
+
+.p-hero{background:linear-gradient(135deg,var(--tint-04),rgba(52,211,153,.14));border:1px solid var(--volt-text);border-radius:14px;padding:18px;margin-bottom:10px;text-align:center}
+.p-hero .he{font-size:30px;margin-bottom:4px}
+.p-hero b{display:block;font-family:'Sora';font-size:15.5px;color:#111417;margin-bottom:2px}
+.p-hero small{font-size:11.5px;color:#4B5563}
+
 @media(max-width:1000px){
   .stage-grid{grid-template-columns:1fr;gap:24px}
   .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
@@ -190,7 +221,7 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
   <div class="wrap">
     <span class="eyebrow">Mobile app · Rider</span>
     <h1>Rider App — live simulation</h1>
-    <p>Walk through the exact experience a rider gets: sign up, verify, then request, match, ride, pay and rate — a full electric trip, end to end.</p>
+    <p>Walk through the exact experience a rider gets: sign up, verify, pick a destination and ride type, get matched instantly, ride, pay, rate — then rebook with the same driver in one tap.</p>
   </div>
 </header>
 
@@ -223,6 +254,7 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
       <div class="value-checks" id="valueChecks"></div>
       <div class="stage-actions">
         <button class="btn btn-primary" id="ctaBtn">Continue</button>
+        <button class="btn btn-primary" id="rebookBtn" style="display:none">Rebook with Mr Alexander</button>
         <button class="btn btn-ghost" id="restartBtn" style="display:none">Restart demo</button>
         <a class="btn btn-ghost" id="backAppsBtn" href="../../index.html#platforms" style="display:none">Back to mobile apps</a>
       </div>
@@ -277,67 +309,98 @@ var STEPS = [
   {
     rail:'Onboarding complete', tag:'Onboarding', title:"You're in.",
     text:'Full KYC-lite verification, done. Your rider account is ready for its first electric trip.',
-    cta:'Book my first ride',
+    cta:'Plan a trip',
     checks:['Account created for Aïcha Dossou','Phone number verified','Home address & payment saved'],
     phone:function(){ return '\
       <div class="p-fade p-center">\
         <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>\
         <div class="p-h">You&#39;re all set, Aïcha</div>\
-        <div class="p-sub">Ready to book your first ride</div>\
-        <button class="p-btn" id="pAction" style="margin-top:18px">Book my first ride</button>\
+        <div class="p-sub">Ready to plan your first electric trip</div>\
+        <button class="p-btn" id="pAction" style="margin-top:18px">Plan a trip</button>\
       </div>'; }
   },
   {
-    rail:'Request a ride', tag:'Ride loop', title:'Upfront fares, no surprises',
-    text:'See your fare before you book. Pay by mobile money, card or wallet — your choice.',
-    cta:'Find a ride',
+    rail:'Set pickup & destination', tag:'Plan your trip', title:"Tell us where you're going",
+    text:'Pickup is set from your location automatically. Just tap where you want to go.',
+    cta:'Confirm destination',
+    checks:['Onboarding complete — verified rider'],
     phone:function(){ return '\
       <div class="p-fade">\
         <div class="p-h">Where to?</div>\
-        <div class="p-field"><label>Pickup</label><div class="val">Rue 214, Cotonou</div></div>\
-        <div class="p-field"><label>Destination</label><div class="val">Cotonou Airport</div></div>\
-        <div class="p-stat-row">\
-          <div class="p-stat"><b>2 400f</b><small>Upfront fare</small></div>\
-          <div class="p-stat"><b>18 min</b><small>Est. trip</small></div>\
-        </div>\
-        <button class="p-btn" id="pAction">Find a ride</button>\
+        <div class="p-loc-chip on" style="cursor:default"><div class="pi">✈️</div><div class="pt"><b>Cotonou Int&#39;l Airport</b><small>Pickup · your location</small></div></div>\
+        <div class="p-sub" style="margin:10px 0 8px">Choose a destination</div>\
+        <div class="p-loc-chip on" data-name="Fidjrossè, Cotonou" onclick="selectLoc(this)"><div class="pi">📍</div><div class="pt"><b>Fidjrossè</b><small>Cotonou · 14.6 km</small></div></div>\
+        <div class="p-loc-chip" data-name="Akpakpa, Cotonou" onclick="selectLoc(this)"><div class="pi">📍</div><div class="pt"><b>Akpakpa</b><small>Cotonou · 9.2 km</small></div></div>\
+        <div class="p-loc-chip" data-name="Cadjehoun, Cotonou" onclick="selectLoc(this)"><div class="pi">📍</div><div class="pt"><b>Cadjehoun</b><small>Cotonou · 6.8 km</small></div></div>\
+        <div class="p-loc-chip" data-name="Ganhi, Cotonou" onclick="selectLoc(this)"><div class="pi">📍</div><div class="pt"><b>Ganhi</b><small>Cotonou · 11.4 km</small></div></div>\
+        <button class="p-btn" id="pAction">Confirm destination</button>\
       </div>'; }
   },
   {
-    rail:'Battery-aware match', tag:'Ride loop', title:'Matched with a fully-charged driver',
-    text:'Dispatch only matches drivers with enough battery range to complete your trip — no stranded rides.',
-    cta:'Track my driver',
-    searching:true,
+    rail:'Choose your ride', tag:'Plan your trip', title:'Every option is electric',
+    text:'Bike, Economy or Comfort — all zero-emission, priced upfront before you confirm.',
+    cta:'Confirm ride',
+    checks:function(){ return ['Destination set — '+chosenDestination]; },
     phone:function(){ return '\
       <div class="p-fade">\
-        <div class="p-spin"></div>\
-        <div class="p-searching">Finding a nearby electric driver…</div>\
-      </div>'; },
-    phoneAfter:function(){ return '\
+        <div class="p-h">Choose your ride</div>\
+        <div class="p-sub">To '+chosenDestination.split(',')[0]+'</div>\
+        <div class="p-vehicle" onclick="selectVehicle(this,\'Bike\',\'🛵\',\'900f\',\'2 min\',\'1 seat\')"><div class="vi">🛵</div><div class="vd"><div class="vn">Bike <span class="elec">ELECTRIC</span></div><div class="vs">1 seat · 2 min away</div></div><div class="vp"><b>900f</b><small>upfront</small></div></div>\
+        <div class="p-vehicle sel" onclick="selectVehicle(this,\'Economy\',\'🚗\',\'2 400f\',\'3 min\',\'4 seats\')"><div class="vi">🚗</div><div class="vd"><div class="vn">Economy <span class="elec">ELECTRIC</span></div><div class="vs">4 seats · 3 min away</div></div><div class="vp"><b>2 400f</b><small>upfront</small></div></div>\
+        <div class="p-vehicle" onclick="selectVehicle(this,\'Comfort\',\'🚙\',\'3 600f\',\'4 min\',\'4 seats · SUV\')"><div class="vi">🚙</div><div class="vd"><div class="vn">Comfort <span class="elec">ELECTRIC</span></div><div class="vs">4 seats · SUV · 4 min away</div></div><div class="vp"><b>3 600f</b><small>upfront</small></div></div>\
+        <button class="p-btn" id="pAction">Request Economy</button>\
+      </div>'; }
+  },
+  {
+    rail:'Meet your driver', tag:'Ride loop', title:'Matched instantly — Mr Alexander is close by',
+    text:'No long searches here. Mr Alexander is already nearby, driving a fully-electric vehicle.',
+    cta:'Track my driver',
+    checks:function(){ return [chosenVehicle.name+' selected — '+chosenVehicle.price, 'Matched with Mr Alexander instantly']; },
+    phone:function(){ return '\
       <div class="p-fade">\
-        <div class="p-h">Driver found</div>\
+        <div class="p-h">Driver matched</div>\
         <div class="p-card p-driver">\
-          <div class="av">JT</div>\
-          <div><div class="nm">Julien T.</div><div class="meta"><span>⭐ 4.9</span><span>🔋 91%</span><span>ETA 3 min</span></div></div>\
+          <div class="av">MA</div>\
+          <div><div class="nm">Mr Alexander</div><div class="meta"><span>⭐ 4.97</span><span>'+chosenVehicle.icon+' '+chosenVehicle.name+'</span><span>ETA 2 min</span></div></div>\
         </div>\
-        <div class="p-field"><label>Vehicle</label><div class="val">Green EV · Sedan · AB 4471</div></div>\
+        <div class="p-field"><label>Vehicle</label><div class="val">Green EV · '+chosenVehicle.name+' · AB 7731</div></div>\
         <button class="p-btn" id="pAction">Track my driver</button>\
+      </div>'; }
+  },
+  {
+    rail:'Track your driver', tag:'Ride loop', title:'Watch Mr Alexander arrive',
+    text:'Live map from Cotonou Airport, updating in real time as he gets closer.',
+    cta:'Start trip',
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Mr Alexander is on the way</div>\
+        <div class="p-map" style="height:190px">\
+          <div class="roads"></div><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+          <div class="pin-label a">Cotonou Airport</div><div class="pin-label b">'+chosenDestination.split(',')[0]+'</div>\
+          <div class="eta-chip">ETA 2 min</div>\
+          <div class="car"><svg viewBox="0 0 24 24" fill="none"><path d="M5 16v-3l2-6c.3-1 1-1.6 2-1.6h6c1 0 1.7.6 2 1.6l2 6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>\
+          <div class="caption">Cotonou, Bénin</div>\
+        </div>\
+        <button class="p-btn" id="pAction">Start trip</button>\
       </div>'; }
   },
   {
     rail:'Live trip & safety', tag:'Ride loop', title:'Tracked, shared, safe',
     text:'Live GPS trip sharing and a one-tap SOS button, on every ride.',
     cta:'Complete trip',
-    checks:['Upfront fare confirmed — 2 400f','Matched with Julien T. · 91% battery'],
+    checks:['Mr Alexander arrived · trip started'],
     phone:function(){ return '\
       <div class="p-fade">\
         <div class="p-h">Trip in progress</div>\
-        <div class="p-map"><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+        <div class="p-map" style="height:190px">\
+          <div class="roads"></div><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+          <div class="pin-label a">Cotonou Airport</div><div class="pin-label b">'+chosenDestination.split(',')[0]+'</div>\
           <div class="car"><svg viewBox="0 0 24 24" fill="none"><path d="M5 16v-3l2-6c.3-1 1-1.6 2-1.6h6c1 0 1.7.6 2 1.6l2 6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>\
+          <div class="caption">Cotonou, Bénin</div>\
         </div>\
         <div class="p-stat-row">\
           <div class="p-stat"><b>7 min</b><small>To destination</small></div>\
-          <div class="p-stat"><b>0g</b><small>CO₂ this trip</small></div>\
+          <div class="p-stat"><b>14.6 km</b><small>Distance so far</small></div>\
         </div>\
         <button class="p-btn" id="pAction">Complete trip</button>\
       </div>'; }
@@ -357,9 +420,9 @@ var STEPS = [
       <div class="p-fade">\
         <div class="p-h">Paid ✓</div>\
         <div class="p-card">\
-          <div class="p-field" style="border:none;padding:0;margin-bottom:6px"><label>Fare</label><div class="val">2 400f</div></div>\
+          <div class="p-field" style="border:none;padding:0;margin-bottom:6px"><label>Fare</label><div class="val">'+chosenVehicle.price+'</div></div>\
           <div class="p-field" style="border:none;padding:0;margin-bottom:6px"><label>Paid via</label><div class="val">Mobile money</div></div>\
-          <div class="p-field" style="border:none;padding:0"><label>Status</label><div class="val" style="color:#2FB170">Settled instantly</div></div>\
+          <div class="p-field" style="border:none;padding:0"><label>Status</label><div class="val" style="color:var(--volt-text)">Settled instantly</div></div>\
         </div>\
         <button class="p-btn" id="pAction">Rate your driver</button>\
       </div>'; }
@@ -368,10 +431,10 @@ var STEPS = [
     rail:'Rate your driver', tag:'Ride loop', title:'Your feedback keeps quality high',
     text:'Ratings feed directly into driver coaching and platform quality scores.',
     cta:'Submit rating',
-    checks:['Fare paid instantly — 2 400f via Mobile money'],
+    checks:function(){ return ['Fare paid instantly — '+chosenVehicle.price+' via Mobile money']; },
     phone:function(){ return '\
       <div class="p-fade p-center">\
-        <div class="p-h">Rate Julien T.</div>\
+        <div class="p-h">Rate Mr Alexander</div>\
         <div class="p-stars" id="pStars">\
           <svg class="on" data-i="1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
           <svg class="on" data-i="2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>\
@@ -386,18 +449,20 @@ var STEPS = [
       </div>'; }
   },
   {
-    rail:'Trip complete', tag:'Complete', title:'Zero-emission trip complete',
-    text:"You just saved roughly 1.2kg of CO₂ versus a petrol taxi. That's the Green Ride loop, every time.",
+    rail:'Trip complete', tag:'Complete', title:"You're a Green Hero! 🌍",
+    text:"Every electric trip cuts real emissions. Here's your impact from pickup to drop-off.",
     cta:null,
-    checks:['5-star rating submitted for Julien T.'],
+    checks:['5-star rating submitted for Mr Alexander'],
     phone:function(){ return '\
       <div class="p-fade p-center">\
-        <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#052012"/></svg></div>\
-        <div class="p-h">Trip complete</div>\
-        <div class="p-sub">Thanks for riding clean, Aïcha</div>\
-        <div class="p-stat-row" style="margin-top:8px">\
-          <div class="p-stat"><b>1.2kg</b><small>CO₂ saved</small></div>\
-          <div class="p-stat"><b>2 400f</b><small>Total paid</small></div>\
+        <div class="p-hero">\
+          <div class="he">🌍</div>\
+          <b>You saved 2.1kg of CO₂</b>\
+          <small>Over 14.6km, pickup to drop-off — nice work, Aïcha!</small>\
+        </div>\
+        <div class="p-stat-row">\
+          <div class="p-stat"><b>14.6 km</b><small>Distance traveled</small></div>\
+          <div class="p-stat"><b>'+chosenVehicle.price+'</b><small>Total paid</small></div>\
         </div>\
         <div class="p-leaf">🌿 Powered by 100% electric fleet</div>\
       </div>'; }
@@ -408,7 +473,25 @@ var idx = 0, rail = document.getElementById('rail'), phoneBody = document.getEle
 var valueTag=document.getElementById('valueTag'), valueTitle=document.getElementById('valueTitle'),
     valueText=document.getElementById('valueText'), valueChecks=document.getElementById('valueChecks'),
     ctaBtn=document.getElementById('ctaBtn'), restartBtn=document.getElementById('restartBtn'),
-    backAppsBtn=document.getElementById('backAppsBtn');
+    backAppsBtn=document.getElementById('backAppsBtn'), rebookBtn=document.getElementById('rebookBtn');
+
+var MATCHED_STEP_INDEX = 6;
+var chosenDestination = 'Fidjrossè, Cotonou';
+var chosenVehicle = { name:'Economy', icon:'🚗', price:'2 400f', eta:'3 min', capacity:'4 seats' };
+
+function selectLoc(el){
+  el.parentElement.querySelectorAll('.p-loc-chip[data-name]').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on');
+  chosenDestination = el.dataset.name;
+}
+function selectVehicle(el, name, icon, price, eta, capacity){
+  el.parentElement.querySelectorAll('.p-vehicle').forEach(function(c){ c.classList.remove('sel'); });
+  el.classList.add('sel');
+  chosenVehicle = { name:name, icon:icon, price:price, eta:eta, capacity:capacity };
+  var pAction = document.getElementById('pAction');
+  if(pAction) pAction.textContent = 'Request ' + name;
+}
+function rebookNow(){ idx = MATCHED_STEP_INDEX; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 
 function buildRail(){
   rail.innerHTML = STEPS.map(function(s,i){
@@ -443,16 +526,27 @@ function render(){
   valueTag.textContent = step.tag;
   valueTitle.textContent = step.title;
   valueText.textContent = step.text;
-  renderChecks(step.checks);
+  renderChecks(typeof step.checks === 'function' ? step.checks() : step.checks);
   phoneBody.innerHTML = step.phone();
   wirePhoneAction(step);
 
   if(step.cta){
-    ctaBtn.style.display='inline-flex'; ctaBtn.textContent = step.cta; ctaBtn.disabled = false;
-    restartBtn.style.display='none'; backAppsBtn.style.display='none';
+    ctaBtn.style.display='inline-flex'; ctaBtn.textContent = step.cta;
+    ctaBtn.disabled = !!(step.searching || step.processing);
+    rebookBtn.style.display='none'; restartBtn.style.display='none'; backAppsBtn.style.display='none';
   } else {
     ctaBtn.style.display='none';
-    restartBtn.style.display='inline-flex'; backAppsBtn.style.display='inline-flex';
+    rebookBtn.style.display='inline-flex'; restartBtn.style.display='inline-flex'; backAppsBtn.style.display='inline-flex';
+  }
+
+  if(step.searching || step.processing){
+    var stepAtStart = idx;
+    setTimeout(function(){
+      if(idx !== stepAtStart) return; // user navigated away (e.g. restart) during the wait
+      phoneBody.innerHTML = step.phoneAfter();
+      wirePhoneAction(step);
+      ctaBtn.disabled = false;
+    }, 1400);
   }
 }
 
@@ -468,17 +562,7 @@ function wirePhoneAction(step){
     });
   }
   if(pAction){
-    pAction.addEventListener('click', function(){
-      if(step.searching || step.processing){
-        pAction.disabled = true;
-        setTimeout(function(){
-          phoneBody.innerHTML = step.phoneAfter();
-          wirePhoneAction(step);
-        }, 1400);
-      } else {
-        advance();
-      }
-    });
+    pAction.addEventListener('click', advance);
   }
 }
 
@@ -486,12 +570,9 @@ function advance(){
   if(idx < STEPS.length - 1){ idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 }
 
-ctaBtn.addEventListener('click', function(){
-  var step = STEPS[idx];
-  if(step.searching || step.processing){ return; } // handled by in-phone button
-  advance();
-});
+ctaBtn.addEventListener('click', advance);
 restartBtn.addEventListener('click', function(){ idx = 0; render(); });
+rebookBtn.addEventListener('click', rebookNow);
 
 buildRail();
 render();
