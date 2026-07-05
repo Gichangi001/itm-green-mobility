@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<script>
+(function(){try{
+  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
+}catch(e){}})();
+</script>
+<title>Station Operator App — ITM Green Mobility</title>
+<meta name="description" content="Station Operator App simulation — run charging sessions, track kWh and manage queue and faults." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
+  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
+  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1220px;
+}
+html[data-theme="dark"]{
+  --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#B7F24C;--emerald:#2FB170;--amber:#FFB020;--sky:#58C7F2;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;
+  --line:rgba(183,242,76,.14);--glass:rgba(9,28,19,.55);
+  --tint-02:rgba(255,255,255,.02);--tint-03:rgba(255,255,255,.03);--tint-04:rgba(255,255,255,.04);
+  --shadow:0 30px 60px -20px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--ink);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;transition:background-color .35s ease,color .35s ease}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.1}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.nav{position:sticky;top:0;z-index:50;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:16px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,var(--hunter),#061c12);border:1px solid var(--line)}
+.brand .mark svg{width:20px;height:20px}
+.brand .name{font-family:'Sora';font-weight:700;font-size:16px}
+.brand .name span{color:var(--volt-text)}
+.back-link{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:500;padding:9px 14px;border-radius:999px;border:1px solid var(--line);transition:.2s}
+.back-link:hover{border-color:var(--volt-text);color:var(--text)}
+.back-link svg{width:15px;height:15px}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:0 0 auto;border-radius:11px;border:1px solid var(--line);background:var(--tint-04);color:var(--text);cursor:pointer}
+.theme-toggle svg{width:18px;height:18px}
+.theme-toggle .i-sun{display:none}.theme-toggle .i-moon{display:block}
+html[data-theme="dark"] .theme-toggle .i-sun{display:block}
+html[data-theme="dark"] .theme-toggle .i-moon{display:none}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.page-head{padding:44px 0 8px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--volt-text);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--volt-text);opacity:.7}
+.page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:14px 0 10px}
+.page-head p{color:var(--muted);max-width:600px;font-size:16px}
+.stage{padding:36px 0 90px}
+.stage-grid{display:grid;grid-template-columns:280px 1fr 340px;gap:28px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:90px}
+.rail-item{display:flex;align-items:flex-start;gap:12px;padding:11px 6px;border-radius:12px;transition:.25s}
+.rail-item .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--faint);background:var(--ink-3);transition:.25s}
+.rail-item .label{font-size:13.5px;color:var(--faint);font-weight:500;padding-top:3px;transition:.25s}
+.rail-item.active .dot{border-color:var(--volt-text);color:var(--volt-text);background:var(--tint-04);box-shadow:0 0 0 4px var(--tint-04)}
+.rail-item.active .label{color:var(--text);font-weight:700}
+.rail-item.done .dot{background:var(--volt-text);border-color:var(--volt-text);color:#052012}
+.rail-item.done .label{color:var(--muted)}
+.rail-item.done .dot svg{width:13px;height:13px}
+.value-card{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:32px;min-height:420px;display:flex;flex-direction:column}
+.value-tag{display:inline-flex;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#052012;background:var(--volt);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.value-card h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.value-card p{color:var(--muted);font-size:15.5px;max-width:440px}
+.value-checks{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.value-checks .vc{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+.value-checks .vc.show{opacity:1;transform:none}
+.value-checks .vc .tick{width:20px;height:20px;border-radius:50%;background:var(--volt-text);color:#052012;display:grid;place-items:center;flex:0 0 auto}
+.value-checks .vc .tick svg{width:12px;height:12px}
+.stage-actions{margin-top:auto;padding-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap}
+.btn-primary{background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;box-shadow:0 12px 26px -8px rgba(183,242,76,.45)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:var(--tint-04);border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.phone-col{position:sticky;top:90px;display:flex;justify-content:center}
+.phone{width:320px;height:600px;border-radius:26px;background:linear-gradient(160deg,#182a20,#0c1810);border:8px solid #0a1710;box-shadow:var(--shadow);position:relative;overflow:hidden}
+html[data-theme="dark"] .phone{border-color:#000}
+.phone-screen{position:absolute;inset:0;background:linear-gradient(180deg,#fbfdf9,#eef4e8);display:flex;flex-direction:column}
+.p-status{display:flex;justify-content:space-between;align-items:center;padding:16px 22px 6px;font-size:12px;font-weight:600;color:#123D2A;font-family:'JetBrains Mono',monospace}
+.p-body{flex:1;padding:16px 22px 26px;display:flex;flex-direction:column;overflow:hidden auto}
+.p-fade{animation:pfade .45s ease}
+@keyframes pfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.p-h{font-family:'Sora';font-weight:700;font-size:19px;color:#0E241A;margin-bottom:6px}
+.p-sub{font-size:12.5px;color:#4B6759;margin-bottom:18px}
+.p-field{background:#fff;border:1px solid rgba(18,61,42,.14);border-radius:13px;padding:12px 14px;margin-bottom:10px}
+.p-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#6C8577;margin-bottom:4px}
+.p-field .val{font-size:14.5px;font-weight:600;color:#0E241A}
+.p-chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.p-chip{font-size:12px;font-weight:600;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid rgba(18,61,42,.14);color:#0E241A;display:inline-flex;align-items:center;gap:6px}
+.p-chip.on{background:var(--volt);border-color:var(--volt);color:#052012}
+.p-chip.ok{background:#e6f6ea;border-color:#bfe6c9;color:#1a7a3b}
+.p-chip.warn{background:#fdeee0;border-color:#f3cda2;color:#9a5b0a}
+.p-card{background:#fff;border:1px solid rgba(18,61,42,.1);border-radius:14px;padding:14px;margin-bottom:10px}
+.p-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(18,61,42,.08);font-size:13px}
+.p-row:last-child{border-bottom:none}
+.p-row .nm{font-weight:600;color:#0E241A}
+.p-row .meta{color:#6C8577;font-size:11.5px}
+.p-stat-row{display:flex;gap:8px;margin-bottom:10px}
+.p-stat{flex:1;background:#fff;border:1px solid rgba(18,61,42,.1);border-radius:12px;padding:10px 12px;text-align:center}
+.p-stat b{display:block;font-family:'Sora';font-size:16px;color:#0E241A}
+.p-stat small{font-size:10px;color:#6C8577}
+.p-bay{position:relative;height:130px;border-radius:14px;background:linear-gradient(160deg,#e2f0d8,#cfe6c2);margin-bottom:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(18,61,42,.1)}
+.p-bay .bolt{width:44px;height:44px;border-radius:12px;background:#123D2A;color:#B7F24C;display:grid;place-items:center;animation:pulse 1.6s ease-in-out infinite}
+.p-bay .bolt svg{width:24px;height:24px}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(183,242,76,.4)}50%{box-shadow:0 0 0 10px rgba(183,242,76,0)}}
+.p-spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(18,61,42,.15);border-top-color:#2FB170;animation:spin .8s linear infinite;margin:30px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.p-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1}
+.p-badge-ok{width:64px;height:64px;border-radius:50%;background:var(--volt);color:#052012;display:grid;place-items:center;margin-bottom:16px}
+.p-badge-ok svg{width:30px;height:30px}
+.p-searching{font-size:13px;color:#4B6759;text-align:center;margin-top:10px}
+.p-leaf{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10.5px;color:#6C8577;letter-spacing:.05em}
+.p-btn{margin-top:auto;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14.5px;padding:14px;border-radius:14px;text-align:center;border:none;cursor:pointer;font-family:inherit}
+.p-btn:active{transform:scale(.98)}
+@media(max-width:1000px){
+  .stage-grid{grid-template-columns:1fr;gap:24px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
+  .rail-item{padding:8px 10px;background:var(--ink-3);border:1px solid var(--line);border-radius:999px}
+  .rail-item .label{display:none}
+  .phone-col{position:static;order:-1}
+}
+@media(max-width:480px){ .phone{width:280px;height:520px} }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#B7F24C"/></svg></div>
+      <div class="name">ITM <span>Green</span> Mobility</div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html#platforms">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to mobile apps
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Mobile / tablet · Station Operator</span>
+    <h1>Station Operator App — live simulation</h1>
+    <p>Walk through an operator's shift: pair a trusted device, go live on a station, then run a charging session end to end — kWh, queue, faults and payment.</p>
+  </div>
+</header>
+
+<section class="stage">
+  <div class="wrap stage-grid">
+    <nav class="rail" id="rail"></nav>
+    <div class="value-card">
+      <span class="value-tag" id="valueTag">Onboarding</span>
+      <h2 id="valueTitle"></h2>
+      <p id="valueText"></p>
+      <div class="value-checks" id="valueChecks"></div>
+      <div class="stage-actions">
+        <button class="btn btn-primary" id="ctaBtn">Continue</button>
+        <button class="btn btn-ghost" id="restartBtn" style="display:none">Restart demo</button>
+        <a class="btn btn-ghost" id="backAppsBtn" href="../../index.html#platforms" style="display:none">Back to mobile apps</a>
+      </div>
+    </div>
+    <div class="phone-col">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="p-status"><span>9:41</span><span>●●● Green Ops</span><span>Wi-Fi</span></div>
+          <div class="p-body" id="phoneBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+var STEPS = [
+  {
+    rail:'Pair trusted device', tag:'Onboarding', title:'Pair this device',
+    text:'Every station tablet is registered and trusted — no shared logins, no loose access.',
+    cta:'Pair device',
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Pair this tablet</div>\
+        <div class="p-sub">Enter the code shown on your station dashboard</div>\
+        <div class="p-field"><label>Pairing code</label><div class="val mono">7 K 2 9 - Q 1</div></div>\
+        <button class="p-btn" id="pAction">Pair device</button>\
+      </div>'; }
+  },
+  {
+    rail:'Station assignment', tag:'Onboarding', title:'Assigned to your station',
+    text:"Your shift and station are set centrally, so you always know where you're working.",
+    cta:'Confirm assignment',
+    checks:['Device paired securely'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Today&#39;s assignment</div>\
+        <div class="p-card">\
+          <div class="p-row"><span class="nm">Cotonou Central Station</span><span class="meta">8 bays</span></div>\
+          <div class="p-row"><span class="nm">Shift</span><span class="meta">07:00 – 15:00</span></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Confirm assignment</button>\
+      </div>'; }
+  },
+  {
+    rail:'Go live', tag:'Onboarding', title:"You're live on the board",
+    text:'Station comes online — chargers, sessions and queue all visible from here.',
+    cta:'Go live',
+    checks:['Device paired securely','Assigned to Cotonou Central'],
+    phone:function(){ return '\
+      <div class="p-fade p-center">\
+        <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>\
+        <div class="p-h">Station live</div>\
+        <div class="p-sub">8 bays online · 0 faults</div>\
+        <button class="p-btn" id="pAction" style="margin-top:18px">Go live</button>\
+      </div>'; }
+  },
+  {
+    rail:'Start a session', tag:'Operations', title:'Confirm vehicle & start charging',
+    text:'Confirm the vehicle at Bay 3, then start the session — kWh tracked from the first second.',
+    cta:'Start session',
+    checks:['Station live — 8 bays online'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Bay 3 — incoming vehicle</div>\
+        <div class="p-card">\
+          <div class="p-row"><span class="nm">Green EV · Sedan</span><span class="meta">AB 4471</span></div>\
+          <div class="p-row"><span class="nm">Driver</span><span class="meta">Julien T.</span></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Start session</button>\
+      </div>'; }
+  },
+  {
+    rail:'Monitor kWh', tag:'Operations', title:'Live kWh & revenue tracking',
+    text:'Watch energy delivered and revenue accumulate in real time, per bay.',
+    cta:'View live totals',
+    checks:['Session started — Bay 3, AB 4471'],
+    searching:true,
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-bay"><div class="bolt"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div></div>\
+        <div class="p-searching" style="margin-top:-4px">Charging Bay 3…</div>\
+      </div>'; },
+    phoneAfter:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Bay 3 — live</div>\
+        <div class="p-stat-row">\
+          <div class="p-stat"><b>12.4 kWh</b><small>Delivered</small></div>\
+          <div class="p-stat"><b>3 100f</b><small>Revenue</small></div>\
+        </div>\
+        <button class="p-btn" id="pAction">View queue &amp; faults</button>\
+      </div>'; }
+  },
+  {
+    rail:'Manage queue & faults', tag:'Operations', title:'Queue and fault management, at a glance',
+    text:"See who's next in line and flag faulty chargers before they cause a bad experience.",
+    cta:'All clear — continue',
+    checks:['12.4 kWh delivered — 3 100f revenue'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Queue &amp; faults</div>\
+        <div class="p-card">\
+          <div class="p-row"><span class="nm">Bay 3</span><span class="p-chip on" style="padding:4px 10px">Charging</span></div>\
+          <div class="p-row"><span class="nm">Bay 5</span><span class="p-chip warn" style="padding:4px 10px">Fault flagged</span></div>\
+          <div class="p-row"><span class="nm">Next in queue</span><span class="meta">1 vehicle waiting</span></div>\
+        </div>\
+        <button class="p-btn" id="pAction">All clear — continue</button>\
+      </div>'; }
+  },
+  {
+    rail:'Confirm payment', tag:'Operations', title:'Payment confirmed automatically',
+    text:'Fare settles the moment the cable disconnects — no manual reconciliation.',
+    cta:'Confirm payment',
+    checks:['Bay 5 fault flagged for maintenance'],
+    phone:function(){ return '\
+      <div class="p-fade">\
+        <div class="p-h">Bay 3 — session ending</div>\
+        <div class="p-card">\
+          <div class="p-row"><span class="nm">Energy delivered</span><span class="meta">14.9 kWh</span></div>\
+          <div class="p-row"><span class="nm">Amount</span><span class="meta">3 725f</span></div>\
+          <div class="p-row"><span class="nm">Status</span><span class="meta" style="color:#2FB170">Paid via wallet</span></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Confirm payment</button>\
+      </div>'; }
+  },
+  {
+    rail:'Close the session', tag:'Complete', title:'Session closed, board updated',
+    text:"Bay 3 is free again — the board updates instantly for the next vehicle.",
+    cta:null,
+    checks:['Payment settled — 3 725f'],
+    phone:function(){ return '\
+      <div class="p-fade p-center">\
+        <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#052012"/></svg></div>\
+        <div class="p-h">Bay 3 closed</div>\
+        <div class="p-sub">Ready for the next vehicle</div>\
+        <div class="p-stat-row" style="margin-top:8px">\
+          <div class="p-stat"><b>14.9 kWh</b><small>This session</small></div>\
+          <div class="p-stat"><b>3 725f</b><small>Revenue</small></div>\
+        </div>\
+        <div class="p-leaf">⚡ 8 bays · 0 unresolved faults</div>\
+      </div>'; }
+  }
+];
+
+var idx = 0, rail = document.getElementById('rail'), phoneBody = document.getElementById('phoneBody');
+var valueTag=document.getElementById('valueTag'), valueTitle=document.getElementById('valueTitle'),
+    valueText=document.getElementById('valueText'), valueChecks=document.getElementById('valueChecks'),
+    ctaBtn=document.getElementById('ctaBtn'), restartBtn=document.getElementById('restartBtn'),
+    backAppsBtn=document.getElementById('backAppsBtn');
+
+function buildRail(){
+  rail.innerHTML = STEPS.map(function(s,i){
+    return '<div class="rail-item" data-i="'+i+'"><div class="dot">'+(i+1)+'</div><div class="label">'+s.rail+'</div></div>';
+  }).join('');
+}
+function renderChecks(list){
+  valueChecks.innerHTML = (list||[]).map(function(t){
+    return '<div class="vc"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>'+t+'</span></div>';
+  }).join('');
+  requestAnimationFrame(function(){
+    valueChecks.querySelectorAll('.vc').forEach(function(el,i){ setTimeout(function(){el.classList.add('show');}, i*120); });
+  });
+}
+function updateRailStates(){
+  rail.querySelectorAll('.rail-item').forEach(function(el){
+    var i = +el.dataset.i;
+    el.classList.remove('active','done');
+    if(i < idx) el.classList.add('done');
+    else if(i === idx) el.classList.add('active');
+  });
+  rail.querySelectorAll('.rail-item.done .dot').forEach(function(d){
+    d.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  });
+}
+function render(){
+  var step = STEPS[idx];
+  updateRailStates();
+  valueTag.textContent = step.tag;
+  valueTitle.textContent = step.title;
+  valueText.textContent = step.text;
+  renderChecks(step.checks);
+  phoneBody.innerHTML = step.phone();
+  wirePhoneAction(step);
+  if(step.cta){
+    ctaBtn.style.display='inline-flex'; ctaBtn.textContent = step.cta; ctaBtn.disabled=false;
+    restartBtn.style.display='none'; backAppsBtn.style.display='none';
+  } else {
+    ctaBtn.style.display='none';
+    restartBtn.style.display='inline-flex'; backAppsBtn.style.display='inline-flex';
+  }
+}
+function wirePhoneAction(step){
+  var pAction = document.getElementById('pAction');
+  if(pAction){
+    pAction.addEventListener('click', function(){
+      if(step.searching || step.processing){
+        pAction.disabled = true;
+        setTimeout(function(){ phoneBody.innerHTML = step.phoneAfter(); wirePhoneAction(step); }, 1400);
+      } else { advance(); }
+    });
+  }
+}
+function advance(){ if(idx < STEPS.length - 1){ idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); } }
+ctaBtn.addEventListener('click', function(){
+  var step = STEPS[idx];
+  if(step.searching || step.processing){ return; }
+  advance();
+});
+restartBtn.addEventListener('click', function(){ idx = 0; render(); });
+buildRail(); render();
+
+(function(){
+  var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
+  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  function isDark(){return html.getAttribute('data-theme')==='dark';}
+  function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
+  function setTheme(dark){
+    if(dark){html.setAttribute('data-theme','dark');}else{html.removeAttribute('data-theme');}
+    try{localStorage.setItem('itm-theme',dark?'dark':'light');}catch(e){}
+    syncMeta();
+  }
+  syncMeta();
+  document.getElementById('themeToggle').addEventListener('click', function(){ setTheme(!isDark()); });
+})();
+</script>
+</body>
+</html>
