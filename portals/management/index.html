@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<script>
+(function(){try{
+  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
+}catch(e){}})();
+</script>
+<title>Management Dashboard — ITM Green Mobility</title>
+<meta name="description" content="Management / Admin Portal simulation — revenue, operations, driver productivity, demand heat map and governance." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
+  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
+  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1280px;
+}
+html[data-theme="dark"]{
+  --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#B7F24C;--emerald:#2FB170;--amber:#FFB020;--sky:#58C7F2;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;
+  --line:rgba(183,242,76,.14);--glass:rgba(9,28,19,.55);
+  --tint-02:rgba(255,255,255,.02);--tint-03:rgba(255,255,255,.03);--tint-04:rgba(255,255,255,.04);
+  --shadow:0 30px 60px -20px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--ink);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;transition:background-color .35s ease,color .35s ease}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.1}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.nav{position:sticky;top:0;z-index:50;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:16px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,var(--hunter),#061c12);border:1px solid var(--line)}
+.brand .mark svg{width:20px;height:20px}
+.brand .name{font-family:'Sora';font-weight:700;font-size:16px}
+.brand .name span{color:var(--volt-text)}
+.back-link{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:500;padding:9px 14px;border-radius:999px;border:1px solid var(--line);transition:.2s}
+.back-link:hover{border-color:var(--volt-text);color:var(--text)}
+.back-link svg{width:15px;height:15px}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:0 0 auto;border-radius:11px;border:1px solid var(--line);background:var(--tint-04);color:var(--text);cursor:pointer}
+.theme-toggle svg{width:18px;height:18px}
+.theme-toggle .i-sun{display:none}.theme-toggle .i-moon{display:block}
+html[data-theme="dark"] .theme-toggle .i-sun{display:block}
+html[data-theme="dark"] .theme-toggle .i-moon{display:none}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.page-head{padding:44px 0 8px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--volt-text);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--volt-text);opacity:.7}
+.page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:14px 0 10px}
+.page-head p{color:var(--muted);max-width:640px;font-size:16px}
+.stage{padding:36px 0 90px}
+.stage-grid{display:grid;grid-template-columns:280px 1fr 380px;gap:28px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:90px}
+.rail-item{display:flex;align-items:flex-start;gap:12px;padding:11px 6px;border-radius:12px;transition:.25s}
+.rail-item .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--faint);background:var(--ink-3);transition:.25s}
+.rail-item .label{font-size:13.5px;color:var(--faint);font-weight:500;padding-top:3px;transition:.25s}
+.rail-item.active .dot{border-color:var(--volt-text);color:var(--volt-text);background:var(--tint-04);box-shadow:0 0 0 4px var(--tint-04)}
+.rail-item.active .label{color:var(--text);font-weight:700}
+.rail-item.done .dot{background:var(--volt-text);border-color:var(--volt-text);color:#052012}
+.rail-item.done .label{color:var(--muted)}
+.rail-item.done .dot svg{width:13px;height:13px}
+.value-card{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:32px;min-height:380px;display:flex;flex-direction:column}
+.value-tag{display:inline-flex;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#052012;background:var(--volt);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.value-card h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.value-card p{color:var(--muted);font-size:15.5px;max-width:440px}
+.value-checks{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.value-checks .vc{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+.value-checks .vc.show{opacity:1;transform:none}
+.value-checks .vc .tick{width:20px;height:20px;border-radius:50%;background:var(--volt-text);color:#052012;display:grid;place-items:center;flex:0 0 auto}
+.value-checks .vc .tick svg{width:12px;height:12px}
+.stage-actions{margin-top:auto;padding-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap}
+.btn-primary{background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;box-shadow:0 12px 26px -8px rgba(183,242,76,.45)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:var(--tint-04);border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
+.btn-sm{padding:9px 16px;font-size:13.5px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* browser frame */
+.frame-col{position:sticky;top:90px}
+.browser{border-radius:16px;border:1px solid var(--line);background:var(--ink-3);box-shadow:var(--shadow);overflow:hidden}
+.browser-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--tint-02)}
+.browser-bar .dots{display:flex;gap:6px}
+.browser-bar .dots span{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.browser-bar .url{flex:1;background:var(--ink-2);border-radius:7px;padding:6px 12px;font-size:11.5px;color:var(--faint);font-family:'JetBrains Mono',monospace}
+.browser-body{padding:24px;min-height:340px}
+.b-fade{animation:pfade .45s ease}
+@keyframes pfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.b-h{font-family:'Sora';font-weight:700;font-size:18px;margin-bottom:6px}
+.b-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.b-field{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.b-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:4px}
+.b-field .val{font-size:14px;font-weight:600}
+.b-btn{margin-top:12px;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14px;padding:12px;border-radius:12px;text-align:center;border:none;cursor:pointer;font-family:inherit;width:100%}
+.b-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px}
+.b-badge-ok{width:56px;height:56px;border-radius:50%;background:var(--volt);color:#052012;display:grid;place-items:center;margin-bottom:14px}
+.b-badge-ok svg{width:26px;height:26px}
+
+/* DASHBOARD MODE */
+.dash{display:none;padding:28px 0 90px}
+.dash.active{display:block}
+.dash-guide{background:var(--ink-3);border:1px solid var(--volt-text);border-radius:16px;padding:18px 22px;margin-bottom:22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dash-guide .gi{width:38px;height:38px;border-radius:10px;background:var(--tint-04);display:grid;place-items:center;color:var(--volt-text);flex:0 0 auto}
+.dash-guide .gi svg{width:19px;height:19px}
+.dash-guide-steps{display:flex;gap:22px;flex-wrap:wrap;flex:1}
+.dash-guide-steps div{font-size:13px;color:var(--muted)}
+.dash-guide-steps b{color:var(--text);display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--volt-text);margin-bottom:2px}
+.dash-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap}
+.dash-topbar h2{font-size:22px;font-weight:700}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:18px}
+.kpi b{display:block;font-family:'Sora';font-size:22px;font-weight:700}
+.kpi small{font-size:12px;color:var(--muted)}
+.kpi .delta{font-size:11.5px;color:var(--emerald);font-weight:600}
+.dash-body{display:grid;grid-template-columns:210px 1fr;gap:20px;align-items:start}
+.tabs{display:flex;flex-direction:column;gap:4px;position:sticky;top:90px}
+.tab-btn{text-align:left;padding:11px 14px;border-radius:11px;border:1px solid transparent;background:none;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:.2s}
+.tab-btn:hover{background:var(--tint-04)}
+.tab-btn.active{background:var(--tint-04);border-color:var(--line);color:var(--text);font-weight:700}
+.panel{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-height:380px}
+.panel h3{font-size:18px;font-weight:700;margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;color:var(--faint);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:none}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+.heat div{height:34px;border-radius:7px}
+.heat-legend{display:flex;gap:14px;margin-top:14px;font-size:12px;color:var(--muted);align-items:center}
+.heat-legend span{display:inline-flex;align-items:center;gap:6px}
+.heat-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+@media(max-width:1000px){
+  .stage-grid{grid-template-columns:1fr;gap:24px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
+  .rail-item{padding:8px 10px;background:var(--ink-3);border:1px solid var(--line);border-radius:999px}
+  .rail-item .label{display:none}
+  .frame-col{position:static;order:-1}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .dash-body{grid-template-columns:1fr}
+  .tabs{position:static;flex-direction:row;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#B7F24C"/></svg></div>
+      <div class="name">ITM <span>Green</span> Mobility</div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html#platforms">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to portals
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Web portal · Admin</span>
+    <h1>Management Dashboard — live simulation</h1>
+    <p>Get admin access set up, then explore the same command center leadership uses: revenue, operations, driver productivity, a live demand heat map and governance.</p>
+  </div>
+</header>
+
+<!-- ONBOARDING -->
+<section class="stage" id="onboardStage">
+  <div class="wrap stage-grid">
+    <nav class="rail" id="rail"></nav>
+    <div class="value-card">
+      <span class="value-tag" id="valueTag">Onboarding</span>
+      <h2 id="valueTitle"></h2>
+      <p id="valueText"></p>
+      <div class="value-checks" id="valueChecks"></div>
+      <div class="stage-actions">
+        <button class="btn btn-primary" id="ctaBtn">Continue</button>
+      </div>
+    </div>
+    <div class="frame-col">
+      <div class="browser">
+        <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">admin.itmgreenmobility.com</div></div>
+        <div class="browser-body" id="frameBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="dash" id="dashStage">
+  <div class="wrap">
+    <div class="dash-guide">
+      <div class="gi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v.01M11 12h1v5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div class="dash-guide-steps">
+        <div><b>1. Pick a tab</b>Revenue, Ops, Drivers, Heat map or Roles — on the left.</div>
+        <div><b>2. Scan the KPIs</b>Top row always shows today's headline numbers.</div>
+        <div><b>3. Drill in</b>Each panel's table is the detail behind the summary.</div>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="../../index.html#platforms">Back to home</a>
+    </div>
+
+    <div class="dash-topbar">
+      <h2>Good morning, Admin</h2>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><b>1,240,000f</b><small>Revenue today</small><div class="delta">▲ 8% vs yesterday</div></div>
+      <div class="kpi"><b>214</b><small>Active rides now</small><div class="delta">▲ 12%</div></div>
+      <div class="kpi"><b>96%</b><small>Trip completion rate</small><div class="delta">▲ 1.2pt</div></div>
+      <div class="kpi"><b>4.8★</b><small>Avg driver rating</small><div class="delta">stable</div></div>
+    </div>
+
+    <div class="dash-body">
+      <div class="tabs" id="tabs"></div>
+      <div class="panel" id="panel"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+var ONBOARD = [
+  {
+    rail:'Verify access', tag:'Onboarding', title:'Verify your admin access',
+    text:'Single sign-on tied to your ITM Holding identity — no shared passwords.',
+    cta:'Verify access',
+    frame:function(){ return '\
+      <div class="b-fade">\
+        <div class="b-h">Sign in to Admin</div>\
+        <div class="b-sub">Single sign-on · ITM Holding identity</div>\
+        <div class="b-field"><label>Account</label><div class="val">admin@itmholding.bj</div></div>\
+        <button class="b-btn" id="fAction">Verify access</button>\
+      </div>'; }
+  },
+  {
+    rail:'Assign role & permissions', tag:'Onboarding', title:'Role-based permissions',
+    text:'Admins see every region; regional managers only see their own zone.',
+    cta:'Confirm role',
+    checks:['Access verified via SSO'],
+    frame:function(){ return '\
+      <div class="b-fade">\
+        <div class="b-h">Your role</div>\
+        <div class="b-field"><label>Role</label><div class="val">Super Admin</div></div>\
+        <div class="b-field"><label>Scope</label><div class="val">All regions — Benin</div></div>\
+        <button class="b-btn" id="fAction">Confirm role</button>\
+      </div>'; }
+  },
+  {
+    rail:'Dashboard ready', tag:'Onboarding', title:'Your command center is ready',
+    text:'Real-time revenue, ops, driver productivity and a live demand heat map — all in one place.',
+    cta:'Enter dashboard',
+    checks:['Access verified via SSO','Role: Super Admin, all regions'],
+    frame:function(){ return '\
+      <div class="b-fade b-center">\
+        <div class="b-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>\
+        <div class="b-h">Access granted</div>\
+        <div class="b-sub">Ready to enter the dashboard</div>\
+      </div>'; }
+  }
+];
+
+var TABS = [
+  { label:'Revenue', render:function(){ return '\
+    <h3>Revenue by pillar — today</h3>\
+    <table class="tbl"><tr><th>Pillar</th><th>Revenue</th><th>Share</th><th>Trend</th></tr>\
+    <tr><td>Green Ride</td><td>710,000f</td><td>57%</td><td style="color:#2FB170">▲ 6%</td></tr>\
+    <tr><td>Green Business</td><td>260,000f</td><td>21%</td><td style="color:#2FB170">▲ 14%</td></tr>\
+    <tr><td>Green Charge</td><td>180,000f</td><td>15%</td><td style="color:#2FB170">▲ 3%</td></tr>\
+    <tr><td>Green Fleet</td><td>90,000f</td><td>7%</td><td style="color:#B9740A">▼ 2%</td></tr>\
+    </table>'; } },
+  { label:'Operations', render:function(){ return '\
+    <h3>Live operations</h3>\
+    <table class="tbl"><tr><th>Metric</th><th>Value</th><th>Status</th></tr>\
+    <tr><td>Avg wait time</td><td>3m 40s</td><td style="color:#2FB170">Healthy</td></tr>\
+    <tr><td>Open support tickets</td><td>7</td><td style="color:#B9740A">Monitor</td></tr>\
+    <tr><td>Cancelled trips (today)</td><td>2.1%</td><td style="color:#2FB170">Healthy</td></tr>\
+    <tr><td>SOS triggers (today)</td><td>0</td><td style="color:#2FB170">Clear</td></tr>\
+    </table>'; } },
+  { label:'Driver productivity', render:function(){ return '\
+    <h3>Top drivers today</h3>\
+    <table class="tbl"><tr><th>Driver</th><th>Trips</th><th>Rating</th><th>Earnings</th></tr>\
+    <tr><td>Julien T.</td><td>11</td><td>4.9★</td><td>14,200f</td></tr>\
+    <tr><td>Marcelline A.</td><td>10</td><td>4.9★</td><td>13,600f</td></tr>\
+    <tr><td>Kossi H.</td><td>9</td><td>4.8★</td><td>12,050f</td></tr>\
+    <tr><td>Ines B.</td><td>8</td><td>4.8★</td><td>10,900f</td></tr>\
+    </table>'; } },
+  { label:'Heat map', render:function(){
+      var colors=['#e9f4e1','#cfe6bf','#a9d489','#7dbf5a','#4fa532','#2f8a17'];
+      var cells=''; for(var i=0;i<28;i++){ var c=colors[Math.floor(Math.random()*colors.length)]; cells+='<div style="background:'+c+'"></div>'; }
+      return '<h3>Live demand heat map — Cotonou</h3><div class="heat">'+cells+'</div>\
+      <div class="heat-legend"><span><i style="background:#e9f4e1"></i>Low</span><span><i style="background:#7dbf5a"></i>Medium</span><span><i style="background:#2f8a17"></i>High demand</span></div>';
+  } },
+  { label:'Roles & governance', render:function(){ return '\
+    <h3>Admin users</h3>\
+    <table class="tbl"><tr><th>User</th><th>Role</th><th>Region</th><th>Last active</th></tr>\
+    <tr><td>You</td><td>Super Admin</td><td>All regions</td><td>Now</td></tr>\
+    <tr><td>Fabrice K.</td><td>Regional Manager</td><td>Cotonou</td><td>2h ago</td></tr>\
+    <tr><td>Solange M.</td><td>Finance Viewer</td><td>All regions</td><td>Yesterday</td></tr>\
+    </table>'; } }
+];
+
+/* onboarding engine */
+var idx=0, rail=document.getElementById('rail'), frameBody=document.getElementById('frameBody');
+var valueTag=document.getElementById('valueTag'), valueTitle=document.getElementById('valueTitle'),
+    valueText=document.getElementById('valueText'), valueChecks=document.getElementById('valueChecks'), ctaBtn=document.getElementById('ctaBtn');
+
+function buildRail(){ rail.innerHTML = ONBOARD.map(function(s,i){ return '<div class="rail-item" data-i="'+i+'"><div class="dot">'+(i+1)+'</div><div class="label">'+s.rail+'</div></div>'; }).join(''); }
+function renderChecks(list){
+  valueChecks.innerHTML = (list||[]).map(function(t){ return '<div class="vc"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>'+t+'</span></div>'; }).join('');
+  requestAnimationFrame(function(){ valueChecks.querySelectorAll('.vc').forEach(function(el,i){ setTimeout(function(){el.classList.add('show');}, i*120); }); });
+}
+function updateRailStates(){
+  rail.querySelectorAll('.rail-item').forEach(function(el){
+    var i=+el.dataset.i; el.classList.remove('active','done');
+    if(i<idx) el.classList.add('done'); else if(i===idx) el.classList.add('active');
+  });
+  rail.querySelectorAll('.rail-item.done .dot').forEach(function(d){ d.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'; });
+}
+function renderOnboard(){
+  var step=ONBOARD[idx];
+  updateRailStates();
+  valueTag.textContent=step.tag; valueTitle.textContent=step.title; valueText.textContent=step.text;
+  renderChecks(step.checks);
+  frameBody.innerHTML=step.frame();
+  var fAction=document.getElementById('fAction');
+  if(fAction) fAction.addEventListener('click', advanceOnboard);
+  ctaBtn.textContent=step.cta;
+}
+function advanceOnboard(){
+  if(idx < ONBOARD.length-1){ idx++; renderOnboard(); }
+  else { enterDashboard(); }
+}
+ctaBtn.addEventListener('click', advanceOnboard);
+buildRail(); renderOnboard();
+
+function enterDashboard(){
+  document.getElementById('onboardStage').style.display='none';
+  var dash=document.getElementById('dashStage'); dash.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* tabs */
+var tabsEl=document.getElementById('tabs'), panelEl=document.getElementById('panel'), tabIdx=0;
+function buildTabs(){
+  tabsEl.innerHTML = TABS.map(function(t,i){ return '<button class="tab-btn'+(i===0?' active':'')+'" data-i="'+i+'">'+t.label+'</button>'; }).join('');
+  tabsEl.querySelectorAll('.tab-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      tabIdx = +b.dataset.i;
+      tabsEl.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      renderTab();
+    });
+  });
+}
+function renderTab(){ panelEl.innerHTML = '<div class="b-fade">'+TABS[tabIdx].render()+'</div>'; }
+buildTabs(); renderTab();
+
+(function(){
+  var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
+  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  function isDark(){return html.getAttribute('data-theme')==='dark';}
+  function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
+  function setTheme(dark){
+    if(dark){html.setAttribute('data-theme','dark');}else{html.removeAttribute('data-theme');}
+    try{localStorage.setItem('itm-theme',dark?'dark':'light');}catch(e){}
+    syncMeta();
+  }
+  syncMeta();
+  document.getElementById('themeToggle').addEventListener('click', function(){ setTheme(!isDark()); });
+})();
+</script>
+</body>
+</html>
