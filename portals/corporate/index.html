@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#F6FAF3" id="metaThemeColor" />
+<script>
+(function(){try{
+  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
+}catch(e){}})();
+</script>
+<title>Corporate Portal — ITM Green Mobility</title>
+<meta name="description" content="Corporate Client Portal simulation — employees, ride policies, budgets, invoices and sustainability reporting." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#F6FAF3;--ink-2:#EBF2E6;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#3E7A1B;--emerald:#2FB170;--amber:#B9740A;--sky:#1477A6;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#0E241A;--muted:#4B6759;--faint:#6C8577;
+  --line:rgba(18,61,42,.13);--glass:rgba(246,250,243,.72);
+  --tint-02:rgba(18,61,42,.035);--tint-03:rgba(18,61,42,.05);--tint-04:rgba(18,61,42,.06);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(18,61,42,.16);--maxw:1280px;
+}
+html[data-theme="dark"]{
+  --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#B7F24C;--emerald:#2FB170;--amber:#FFB020;--sky:#58C7F2;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;
+  --line:rgba(183,242,76,.14);--glass:rgba(9,28,19,.55);
+  --tint-02:rgba(255,255,255,.02);--tint-03:rgba(255,255,255,.03);--tint-04:rgba(255,255,255,.04);
+  --shadow:0 30px 60px -20px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--ink);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;transition:background-color .35s ease,color .35s ease}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.1}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.nav{position:sticky;top:0;z-index:50;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:16px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,var(--hunter),#061c12);border:1px solid var(--line)}
+.brand .mark svg{width:20px;height:20px}
+.brand .name{font-family:'Sora';font-weight:700;font-size:16px}
+.brand .name span{color:var(--volt-text)}
+.back-link{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:500;padding:9px 14px;border-radius:999px;border:1px solid var(--line);transition:.2s}
+.back-link:hover{border-color:var(--volt-text);color:var(--text)}
+.back-link svg{width:15px;height:15px}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:0 0 auto;border-radius:11px;border:1px solid var(--line);background:var(--tint-04);color:var(--text);cursor:pointer}
+.theme-toggle svg{width:18px;height:18px}
+.theme-toggle .i-sun{display:none}.theme-toggle .i-moon{display:block}
+html[data-theme="dark"] .theme-toggle .i-sun{display:block}
+html[data-theme="dark"] .theme-toggle .i-moon{display:none}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.page-head{padding:44px 0 8px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--volt-text);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--volt-text);opacity:.7}
+.page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:14px 0 10px}
+.page-head p{color:var(--muted);max-width:640px;font-size:16px}
+.stage{padding:36px 0 90px}
+.stage-grid{display:grid;grid-template-columns:280px 1fr 380px;gap:28px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:90px}
+.rail-item{display:flex;align-items:flex-start;gap:12px;padding:11px 6px;border-radius:12px;transition:.25s}
+.rail-item .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--faint);background:var(--ink-3);transition:.25s}
+.rail-item .label{font-size:13.5px;color:var(--faint);font-weight:500;padding-top:3px;transition:.25s}
+.rail-item.active .dot{border-color:var(--volt-text);color:var(--volt-text);background:var(--tint-04);box-shadow:0 0 0 4px var(--tint-04)}
+.rail-item.active .label{color:var(--text);font-weight:700}
+.rail-item.done .dot{background:var(--volt-text);border-color:var(--volt-text);color:#052012}
+.rail-item.done .label{color:var(--muted)}
+.rail-item.done .dot svg{width:13px;height:13px}
+.value-card{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:32px;min-height:380px;display:flex;flex-direction:column}
+.value-tag{display:inline-flex;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#052012;background:var(--volt);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.value-card h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.value-card p{color:var(--muted);font-size:15.5px;max-width:440px}
+.value-checks{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.value-checks .vc{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+.value-checks .vc.show{opacity:1;transform:none}
+.value-checks .vc .tick{width:20px;height:20px;border-radius:50%;background:var(--volt-text);color:#052012;display:grid;place-items:center;flex:0 0 auto}
+.value-checks .vc .tick svg{width:12px;height:12px}
+.stage-actions{margin-top:auto;padding-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap}
+.btn-primary{background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;box-shadow:0 12px 26px -8px rgba(183,242,76,.45)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:var(--tint-04);border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
+.btn-sm{padding:9px 16px;font-size:13.5px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* browser frame */
+.frame-col{position:sticky;top:90px}
+.browser{border-radius:16px;border:1px solid var(--line);background:var(--ink-3);box-shadow:var(--shadow);overflow:hidden}
+.browser-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--tint-02)}
+.browser-bar .dots{display:flex;gap:6px}
+.browser-bar .dots span{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.browser-bar .url{flex:1;background:var(--ink-2);border-radius:7px;padding:6px 12px;font-size:11.5px;color:var(--faint);font-family:'JetBrains Mono',monospace}
+.browser-body{padding:24px;min-height:340px}
+.b-fade{animation:pfade .45s ease}
+@keyframes pfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.b-h{font-family:'Sora';font-weight:700;font-size:18px;margin-bottom:6px}
+.b-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.b-field{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.b-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:4px}
+.b-field .val{font-size:14px;font-weight:600}
+.b-btn{margin-top:12px;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14px;padding:12px;border-radius:12px;text-align:center;border:none;cursor:pointer;font-family:inherit;width:100%}
+.b-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px}
+.b-badge-ok{width:56px;height:56px;border-radius:50%;background:var(--volt);color:#052012;display:grid;place-items:center;margin-bottom:14px}
+.b-badge-ok svg{width:26px;height:26px}
+
+/* DASHBOARD MODE */
+.dash{display:none;padding:28px 0 90px}
+.dash.active{display:block}
+.dash-guide{background:var(--ink-3);border:1px solid var(--volt-text);border-radius:16px;padding:18px 22px;margin-bottom:22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dash-guide .gi{width:38px;height:38px;border-radius:10px;background:var(--tint-04);display:grid;place-items:center;color:var(--volt-text);flex:0 0 auto}
+.dash-guide .gi svg{width:19px;height:19px}
+.dash-guide-steps{display:flex;gap:22px;flex-wrap:wrap;flex:1}
+.dash-guide-steps div{font-size:13px;color:var(--muted)}
+.dash-guide-steps b{color:var(--text);display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--volt-text);margin-bottom:2px}
+.dash-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap}
+.dash-topbar h2{font-size:22px;font-weight:700}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:18px}
+.kpi b{display:block;font-family:'Sora';font-size:22px;font-weight:700}
+.kpi small{font-size:12px;color:var(--muted)}
+.kpi .delta{font-size:11.5px;color:var(--emerald);font-weight:600}
+.dash-body{display:grid;grid-template-columns:210px 1fr;gap:20px;align-items:start}
+.tabs{display:flex;flex-direction:column;gap:4px;position:sticky;top:90px}
+.tab-btn{text-align:left;padding:11px 14px;border-radius:11px;border:1px solid transparent;background:none;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:.2s}
+.tab-btn:hover{background:var(--tint-04)}
+.tab-btn.active{background:var(--tint-04);border-color:var(--line);color:var(--text);font-weight:700}
+.panel{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-height:380px}
+.panel h3{font-size:18px;font-weight:700;margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;color:var(--faint);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:none}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+.heat div{height:34px;border-radius:7px}
+.heat-legend{display:flex;gap:14px;margin-top:14px;font-size:12px;color:var(--muted);align-items:center}
+.heat-legend span{display:inline-flex;align-items:center;gap:6px}
+.heat-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+@media(max-width:1000px){
+  .stage-grid{grid-template-columns:1fr;gap:24px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
+  .rail-item{padding:8px 10px;background:var(--ink-3);border:1px solid var(--line);border-radius:999px}
+  .rail-item .label{display:none}
+  .frame-col{position:static;order:-1}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .dash-body{grid-template-columns:1fr}
+  .tabs{position:static;flex-direction:row;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#B7F24C"/></svg></div>
+      <div class="name">ITM <span>Green</span> Mobility</div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html#platforms">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to portals
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Web portal · Corporate</span>
+    <h1>Corporate Portal — live simulation</h1>
+    <p>Go from signed contract to live billing, then explore what your company admin sees every day: employees, ride policies, budgets, invoices and sustainability reporting.</p>
+  </div>
+</header>
+
+<!-- ONBOARDING -->
+<section class="stage" id="onboardStage">
+  <div class="wrap stage-grid">
+    <nav class="rail" id="rail"></nav>
+    <div class="value-card">
+      <span class="value-tag" id="valueTag">Onboarding</span>
+      <h2 id="valueTitle"></h2>
+      <p id="valueText"></p>
+      <div class="value-checks" id="valueChecks"></div>
+      <div class="stage-actions">
+        <button class="btn btn-primary" id="ctaBtn">Continue</button>
+      </div>
+    </div>
+    <div class="frame-col">
+      <div class="browser">
+        <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">corporate.itmgreenmobility.com</div></div>
+        <div class="browser-body" id="frameBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="dash" id="dashStage">
+  <div class="wrap">
+    <div class="dash-guide">
+      <div class="gi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v.01M11 12h1v5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div class="dash-guide-steps">
+        <div><b>1. Pick a tab</b>Employees, Policies, Spend, Invoices or Carbon — on the left.</div>
+        <div><b>2. Scan the KPIs</b>Top row always shows this month's headline numbers.</div>
+        <div><b>3. Drill in</b>Each panel's table is the detail behind the summary.</div>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="../../index.html#platforms">Back to home</a>
+    </div>
+
+    <div class="dash-topbar">
+      <h2>Good morning, ITM Holding account</h2>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><b>1,860,000f</b><small>Spend this month</small><div class="delta">▲ 6% vs budget</div></div>
+      <div class="kpi"><b>24</b><small>Active employees</small><div class="delta">▲ 3 this month</div></div>
+      <div class="kpi"><b>412</b><small>Trips this month</small><div class="delta">▲ 9%</div></div>
+      <div class="kpi"><b>186kg</b><small>CO₂ saved this month</small><div class="delta">stable</div></div>
+    </div>
+
+    <div class="dash-body">
+      <div class="tabs" id="tabs"></div>
+      <div class="panel" id="panel"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+var ONBOARD = [
+  {
+    rail:'Contract & sales', tag:'Onboarding', title:'Your contract is active',
+    text:'Corporate rates, ride policies and billing terms — set once by your account manager.',
+    cta:'Continue',
+    frame:function(){ return '\
+      <div class="b-fade">\
+        <div class="b-h">Contract summary</div>\
+        <div class="b-field"><label>Company</label><div class="val">ITM Holding — Cotonou HQ</div></div>\
+        <div class="b-field"><label>Billing terms</label><div class="val">Net-30, monthly invoice</div></div>\
+        <button class="b-btn" id="fAction">Continue</button>\
+      </div>'; }
+  },
+  {
+    rail:'Add employees', tag:'Onboarding', title:'Add your team',
+    text:'Invite employees by phone number — each gets a corporate-rate ride account instantly.',
+    cta:'Invite employees',
+    checks:['Contract activated — Net-30 billing'],
+    frame:function(){ return '\
+      <div class="b-fade">\
+        <div class="b-h">Invite employees</div>\
+        <div class="b-field"><label>Uploaded</label><div class="val">24 employees via CSV</div></div>\
+        <div class="b-field"><label>Default policy</label><div class="val">Business hours, 15,000f/month cap</div></div>\
+        <button class="b-btn" id="fAction">Invite employees</button>\
+      </div>'; }
+  },
+  {
+    rail:'Billing ready', tag:'Onboarding', title:'Live billing is ready',
+    text:'Every ride is tracked against your budget and invoiced automatically each month.',
+    cta:'Enter portal',
+    checks:['Contract activated — Net-30 billing','24 employees invited'],
+    frame:function(){ return '\
+      <div class="b-fade b-center">\
+        <div class="b-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>\
+        <div class="b-h">You&#39;re live</div>\
+        <div class="b-sub">Ready to enter the corporate portal</div>\
+      </div>'; }
+  }
+];
+
+var TABS = [
+  { label:'Employees', render:function(){ return '\
+    <h3>Employees</h3>\
+    <table class="tbl"><tr><th>Employee</th><th>Department</th><th>Trips (month)</th><th>Status</th></tr>\
+    <tr><td>Nadège S.</td><td>Sales</td><td>18</td><td style="color:#2FB170">Active</td></tr>\
+    <tr><td>Roland A.</td><td>Operations</td><td>14</td><td style="color:#2FB170">Active</td></tr>\
+    <tr><td>Chantal K.</td><td>Finance</td><td>9</td><td style="color:#2FB170">Active</td></tr>\
+    <tr><td>Didier M.</td><td>Sales</td><td>2</td><td style="color:#B9740A">New</td></tr>\
+    </table>'; } },
+  { label:'Ride policies', render:function(){ return '\
+    <h3>Ride policies</h3>\
+    <table class="tbl"><tr><th>Policy</th><th>Rule</th><th>Applies to</th></tr>\
+    <tr><td>Business hours</td><td>07:00–20:00 only</td><td>All employees</td></tr>\
+    <tr><td>Monthly cap</td><td>15,000f per employee</td><td>All employees</td></tr>\
+    <tr><td>Airport exemption</td><td>No cap, pre-approved</td><td>Sales, Executives</td></tr>\
+    </table>'; } },
+  { label:'Spend', render:function(){ return '\
+    <h3>Budget vs spend — this month</h3>\
+    <table class="tbl"><tr><th>Department</th><th>Budget</th><th>Spend</th><th>Status</th></tr>\
+    <tr><td>Sales</td><td>800,000f</td><td>740,000f</td><td style="color:#2FB170">On track</td></tr>\
+    <tr><td>Operations</td><td>600,000f</td><td>612,000f</td><td style="color:#B9740A">Over budget</td></tr>\
+    <tr><td>Finance</td><td>300,000f</td><td>210,000f</td><td style="color:#2FB170">On track</td></tr>\
+    </table>'; } },
+  { label:'Invoices', render:function(){ return '\
+    <h3>Monthly invoices</h3>\
+    <table class="tbl"><tr><th>Invoice</th><th>Period</th><th>Amount</th><th>Status</th></tr>\
+    <tr><td>INV-2026-06</td><td>June 2026</td><td>1,860,000f</td><td style="color:#B9740A">Due in 12 days</td></tr>\
+    <tr><td>INV-2026-05</td><td>May 2026</td><td>1,710,000f</td><td style="color:#2FB170">Paid</td></tr>\
+    <tr><td>INV-2026-04</td><td>April 2026</td><td>1,590,000f</td><td style="color:#2FB170">Paid</td></tr>\
+    </table>'; } },
+  { label:'Carbon', render:function(){ return '\
+    <h3>Sustainability report</h3>\
+    <table class="tbl"><tr><th>Metric</th><th>This month</th><th>Since contract start</th></tr>\
+    <tr><td>CO₂ saved</td><td>186kg</td><td>1.02t</td></tr>\
+    <tr><td>Electric trips</td><td>412</td><td>2,340</td></tr>\
+    <tr><td>Equivalent trees planted</td><td>—</td><td>~46</td></tr>\
+    </table>'; } }
+];
+
+/* onboarding engine */
+var idx=0, rail=document.getElementById('rail'), frameBody=document.getElementById('frameBody');
+var valueTag=document.getElementById('valueTag'), valueTitle=document.getElementById('valueTitle'),
+    valueText=document.getElementById('valueText'), valueChecks=document.getElementById('valueChecks'), ctaBtn=document.getElementById('ctaBtn');
+
+function buildRail(){ rail.innerHTML = ONBOARD.map(function(s,i){ return '<div class="rail-item" data-i="'+i+'"><div class="dot">'+(i+1)+'</div><div class="label">'+s.rail+'</div></div>'; }).join(''); }
+function renderChecks(list){
+  valueChecks.innerHTML = (list||[]).map(function(t){ return '<div class="vc"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>'+t+'</span></div>'; }).join('');
+  requestAnimationFrame(function(){ valueChecks.querySelectorAll('.vc').forEach(function(el,i){ setTimeout(function(){el.classList.add('show');}, i*120); }); });
+}
+function updateRailStates(){
+  rail.querySelectorAll('.rail-item').forEach(function(el){
+    var i=+el.dataset.i; el.classList.remove('active','done');
+    if(i<idx) el.classList.add('done'); else if(i===idx) el.classList.add('active');
+  });
+  rail.querySelectorAll('.rail-item.done .dot').forEach(function(d){ d.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'; });
+}
+function renderOnboard(){
+  var step=ONBOARD[idx];
+  updateRailStates();
+  valueTag.textContent=step.tag; valueTitle.textContent=step.title; valueText.textContent=step.text;
+  renderChecks(step.checks);
+  frameBody.innerHTML=step.frame();
+  var fAction=document.getElementById('fAction');
+  if(fAction) fAction.addEventListener('click', advanceOnboard);
+  ctaBtn.textContent=step.cta;
+}
+function advanceOnboard(){
+  if(idx < ONBOARD.length-1){ idx++; renderOnboard(); }
+  else { enterDashboard(); }
+}
+ctaBtn.addEventListener('click', advanceOnboard);
+buildRail(); renderOnboard();
+
+function enterDashboard(){
+  document.getElementById('onboardStage').style.display='none';
+  var dash=document.getElementById('dashStage'); dash.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* tabs */
+var tabsEl=document.getElementById('tabs'), panelEl=document.getElementById('panel'), tabIdx=0;
+function buildTabs(){
+  tabsEl.innerHTML = TABS.map(function(t,i){ return '<button class="tab-btn'+(i===0?' active':'')+'" data-i="'+i+'">'+t.label+'</button>'; }).join('');
+  tabsEl.querySelectorAll('.tab-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      tabIdx = +b.dataset.i;
+      tabsEl.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      renderTab();
+    });
+  });
+}
+function renderTab(){ panelEl.innerHTML = '<div class="b-fade">'+TABS[tabIdx].render()+'</div>'; }
+buildTabs(); renderTab();
+
+(function(){
+  var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
+  var LIGHT_COLOR='#F6FAF3', DARK_COLOR='#071A12';
+  function isDark(){return html.getAttribute('data-theme')==='dark';}
+  function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
+  function setTheme(dark){
+    if(dark){html.setAttribute('data-theme','dark');}else{html.removeAttribute('data-theme');}
+    try{localStorage.setItem('itm-theme',dark?'dark':'light');}catch(e){}
+    syncMeta();
+  }
+  syncMeta();
+  document.getElementById('themeToggle').addEventListener('click', function(){ setTheme(!isDark()); });
+})();
+</script>
+</body>
+</html>
