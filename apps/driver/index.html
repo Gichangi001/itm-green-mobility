@@ -136,8 +136,20 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .p-badge-ok svg{width:30px;height:30px}
 .p-searching{font-size:13px;color:#4B5563;text-align:center;margin-top:10px}
 .p-leaf{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10.5px;color:#6B7280;letter-spacing:.05em}
-.p-btn{margin-top:auto;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14.5px;padding:14px;border-radius:14px;text-align:center;border:none;cursor:pointer;font-family:inherit}
+.p-btn{margin-top:auto;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14.5px;padding:14px;border-radius:14px;text-align:center;border:none;cursor:pointer;font-family:inherit;animation:glow 2.2s ease-in-out infinite}
 .p-btn:active{transform:scale(.98)}
+.p-btn[disabled]{animation:none;opacity:.55;pointer-events:none}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}50%{box-shadow:0 0 0 9px rgba(52,211,153,0)}}
+.p-input-group{margin-bottom:10px}
+.p-input-group label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#6B7280;margin-bottom:4px}
+.p-input-group input,.p-input-group select{width:100%;font-size:14.5px;font-weight:600;color:#111417;background:#fff;border:1px solid rgba(15,23,31,.14);border-radius:13px;padding:12px 14px;font-family:inherit}
+.p-input-group input:focus,.p-input-group select:focus{outline:none;border-color:var(--volt-text)}
+.p-map .roads{position:absolute;inset:0;opacity:.4;background-image:repeating-linear-gradient(100deg,rgba(18,61,42,.14) 0 2px,transparent 2px 34px),repeating-linear-gradient(10deg,rgba(18,61,42,.10) 0 2px,transparent 2px 46px)}
+.p-map .pin-label{position:absolute;font-size:9px;font-weight:700;color:#123D2A;background:rgba(255,255,255,.9);padding:3px 7px;border-radius:7px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.p-map .pin-label.a{left:12%;top:calc(50% + 13px);transform:translateX(-50%)}
+.p-map .pin-label.b{right:12%;top:calc(50% + 13px);transform:translateX(50%)}
+.p-map .caption{position:absolute;bottom:7px;left:12px;font-size:9px;color:#4B5563;font-weight:700;letter-spacing:.04em}
+.p-map .earn-chip{position:absolute;top:10px;right:10px;background:#123D2A;color:#B7F24C;font-size:10.5px;font-weight:700;padding:5px 9px;border-radius:8px}
 @media(max-width:1000px){
   .stage-grid{grid-template-columns:1fr;gap:24px}
   .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
@@ -218,8 +230,9 @@ var STEPS = [
       <div class="p-fade">\
         <div class="p-h">Drive with Green Ride</div>\
         <div class="p-sub">Tell us about you and your vehicle</div>\
-        <div class="p-field"><label>Full name</label><div class="val">Julien Towanou</div></div>\
-        <div class="p-field"><label>Vehicle</label><div class="val">Green EV · Sedan</div></div>\
+        <div class="p-input-group"><label>Full name</label><input type="text" value="Julien Towanou"></div>\
+        <div class="p-input-group"><label>Phone number</label><input type="text" value="+229 96 •• •• 18"></div>\
+        <div class="p-input-group"><label>Vehicle type</label><select><option>Green EV · Sedan</option><option>Green EV · Hatchback</option><option>Green EV · Bike</option></select></div>\
         <button class="p-btn" id="pAction">Continue</button>\
       </div>'; }
   },
@@ -294,17 +307,14 @@ var STEPS = [
     text:"Navigation accounts for your remaining range so you're never caught short mid-trip.",
     cta:'Start trip',
     checks:['Trip accepted — Aïcha D., 2 400f'],
-    searching:true,
     phone:function(){ return '\
       <div class="p-fade">\
-        <div class="p-spin"></div>\
-        <div class="p-searching">Routing to pickup — range checked…</div>\
-      </div>'; },
-    phoneAfter:function(){ return '\
-      <div class="p-fade">\
         <div class="p-h">Route confirmed</div>\
-        <div class="p-map"><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+        <div class="p-map" style="height:190px">\
+          <div class="roads"></div><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+          <div class="pin-label a">You</div><div class="pin-label b">Aïcha D.</div>\
           <div class="car"><svg viewBox="0 0 24 24" fill="none"><path d="M5 16v-3l2-6c.3-1 1-1.6 2-1.6h6c1 0 1.7.6 2 1.6l2 6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>\
+          <div class="caption">Cotonou, Bénin</div>\
         </div>\
         <div class="p-stat-row">\
           <div class="p-stat"><b>4 min</b><small>To pickup</small></div>\
@@ -321,11 +331,15 @@ var STEPS = [
     phone:function(){ return '\
       <div class="p-fade">\
         <div class="p-h">Trip in progress</div>\
-        <div class="p-map"><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+        <div class="p-map" style="height:190px">\
+          <div class="roads"></div><div class="route"></div><div class="pin a"></div><div class="pin b"></div>\
+          <div class="pin-label a">Pickup</div><div class="pin-label b">Fidjrossè</div>\
+          <div class="earn-chip">+2 400f</div>\
           <div class="car"><svg viewBox="0 0 24 24" fill="none"><path d="M5 16v-3l2-6c.3-1 1-1.6 2-1.6h6c1 0 1.7.6 2 1.6l2 6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>\
+          <div class="caption">Cotonou, Bénin</div>\
         </div>\
         <div class="p-stat-row">\
-          <div class="p-stat"><b>2 400f</b><small>This trip</small></div>\
+          <div class="p-stat"><b>11 800f</b><small>Earned today so far</small></div>\
           <div class="p-stat"><b>84%</b><small>Battery remaining</small></div>\
         </div>\
         <button class="p-btn" id="pAction">Complete trip</button>\
