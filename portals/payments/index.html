@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
+<script>
+(function(){try{
+  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
+}catch(e){}})();
+</script>
+<title>Integration System (Payment IFS) — ITM Green Mobility</title>
+<meta name="description" content="Payment IFS simulation — the payment gateway for every ITM Green Mobility solution: transactions, methods, settlements, disputes and provider health." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#FFFFFF;--ink-2:#F4F6F8;--ink-3:#FFFFFF;--hunter:#123D2A;
+  --volt:#34D399;--volt-text:#047857;--emerald:#10B981;--amber:#B45309;--sky:#0284C7;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#111417;--muted:#4B5563;--faint:#6B7280;
+  --line:rgba(15,23,31,.10);--glass:rgba(255,255,255,.78);
+  --tint-02:rgba(15,23,31,.035);--tint-03:rgba(15,23,31,.05);--tint-04:rgba(15,23,31,.065);
+  --radius:22px;--shadow:0 24px 50px -20px rgba(15,23,31,.14);--maxw:1280px;
+}
+html[data-theme="dark"]{
+  --ink:#071A12;--ink-2:#0A2418;--ink-3:#0E2E20;--hunter:#123D2A;
+  --volt:#B7F24C;--volt-text:#B7F24C;--emerald:#2FB170;--amber:#FFB020;--sky:#58C7F2;
+  --coral:#FF7A59;--violet:#7C6CF0;--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;
+  --line:rgba(183,242,76,.14);--glass:rgba(9,28,19,.55);
+  --tint-02:rgba(255,255,255,.02);--tint-03:rgba(255,255,255,.03);--tint-04:rgba(255,255,255,.04);
+  --shadow:0 30px 60px -20px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--ink);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;transition:background-color .35s ease,color .35s ease}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.1}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.nav{position:sticky;top:0;z-index:50;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:16px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,var(--hunter),#061c12);border:1px solid var(--line)}
+.brand .mark svg{width:20px;height:20px}
+.brand .name{font-family:'Sora';font-weight:700;font-size:16px}
+.brand .name span{color:var(--volt-text)}
+.back-link{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:500;padding:9px 14px;border-radius:999px;border:1px solid var(--line);transition:.2s}
+.back-link:hover{border-color:var(--volt-text);color:var(--text)}
+.back-link svg{width:15px;height:15px}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:0 0 auto;border-radius:11px;border:1px solid var(--line);background:var(--tint-04);color:var(--text);cursor:pointer}
+.theme-toggle svg{width:18px;height:18px}
+.theme-toggle .i-sun{display:none}.theme-toggle .i-moon{display:block}
+html[data-theme="dark"] .theme-toggle .i-sun{display:block}
+html[data-theme="dark"] .theme-toggle .i-moon{display:none}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.page-head{padding:44px 0 8px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--volt-text);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--volt-text);opacity:.7}
+.page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:14px 0 10px}
+.page-head p{color:var(--muted);max-width:640px;font-size:16px}
+.stage{padding:36px 0 90px}
+.stage-grid{display:grid;grid-template-columns:280px 1fr 380px;gap:28px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:90px}
+.rail-item{display:flex;align-items:flex-start;gap:12px;padding:11px 6px;border-radius:12px;transition:.25s}
+.rail-item .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--faint);background:var(--ink-3);transition:.25s}
+.rail-item .label{font-size:13.5px;color:var(--faint);font-weight:500;padding-top:3px;transition:.25s}
+.rail-item.active .dot{border-color:var(--volt-text);color:var(--volt-text);background:var(--tint-04);box-shadow:0 0 0 4px var(--tint-04)}
+.rail-item.active .label{color:var(--text);font-weight:700}
+.rail-item.done .dot{background:var(--volt-text);border-color:var(--volt-text);color:#052012}
+.rail-item.done .label{color:var(--muted)}
+.rail-item.done .dot svg{width:13px;height:13px}
+.value-card{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:32px;min-height:380px;display:flex;flex-direction:column}
+.value-tag{display:inline-flex;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#052012;background:var(--volt);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.value-card h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.value-card p{color:var(--muted);font-size:15.5px;max-width:440px}
+.value-checks{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.value-checks .vc{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+.value-checks .vc.show{opacity:1;transform:none}
+.value-checks .vc .tick{width:20px;height:20px;border-radius:50%;background:var(--volt-text);color:#052012;display:grid;place-items:center;flex:0 0 auto}
+.value-checks .vc .tick svg{width:12px;height:12px}
+.stage-actions{margin-top:auto;padding-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap}
+.btn-primary{background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;box-shadow:0 12px 26px -8px rgba(183,242,76,.45)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:var(--tint-04);border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
+.btn-sm{padding:9px 16px;font-size:13.5px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* browser frame */
+.frame-col{position:sticky;top:90px}
+.browser{border-radius:16px;border:1px solid var(--line);background:var(--ink-3);box-shadow:var(--shadow);overflow:hidden}
+.browser-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--tint-02)}
+.browser-bar .dots{display:flex;gap:6px}
+.browser-bar .dots span{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.browser-bar .url{flex:1;background:var(--ink-2);border-radius:7px;padding:6px 12px;font-size:11.5px;color:var(--faint);font-family:'JetBrains Mono',monospace}
+.browser-body{padding:24px;min-height:340px}
+.b-fade{animation:pfade .45s ease}
+@keyframes pfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.b-h{font-family:'Sora';font-weight:700;font-size:18px;margin-bottom:6px}
+.b-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.b-field{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.b-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:4px}
+.b-field .val{font-size:14px;font-weight:600}
+.b-btn{margin-top:12px;background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;font-weight:700;font-size:14px;padding:12px;border-radius:12px;text-align:center;border:none;cursor:pointer;font-family:inherit;width:100%}
+.b-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px}
+.b-badge-ok{width:56px;height:56px;border-radius:50%;background:var(--volt);color:#052012;display:grid;place-items:center;margin-bottom:14px}
+.b-badge-ok svg{width:26px;height:26px}
+
+/* DASHBOARD MODE */
+.dash{display:none;padding:28px 0 90px}
+.dash.active{display:block}
+.dash-guide{background:var(--ink-3);border:1px solid var(--volt-text);border-radius:16px;padding:18px 22px;margin-bottom:22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dash-guide .gi{width:38px;height:38px;border-radius:10px;background:var(--tint-04);display:grid;place-items:center;color:var(--volt-text);flex:0 0 auto}
+.dash-guide .gi svg{width:19px;height:19px}
+.dash-guide-steps{display:flex;gap:22px;flex-wrap:wrap;flex:1}
+.dash-guide-steps div{font-size:13px;color:var(--muted)}
+.dash-guide-steps b{color:var(--text);display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--volt-text);margin-bottom:2px}
+.dash-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap}
+.dash-topbar h2{font-size:22px;font-weight:700}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:18px;transition:transform .25s,box-shadow .25s,border-color .25s}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 14px 28px -16px rgba(15,23,31,.25);border-color:var(--volt-text)}
+.kpi b{display:block;font-family:'Sora';font-size:22px;font-weight:700}
+.kpi small{font-size:12px;color:var(--muted)}
+.kpi .delta{font-size:11.5px;color:var(--emerald);font-weight:600}
+.dash-body{display:grid;grid-template-columns:210px 1fr;gap:20px;align-items:start}
+.tabs{display:flex;flex-direction:column;gap:4px;position:sticky;top:90px}
+.tab-btn{text-align:left;padding:11px 14px;border-radius:11px;border:1px solid transparent;background:none;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:.2s}
+.tab-btn:hover{background:var(--tint-04);transform:translateX(2px)}
+.tab-btn.active{background:var(--tint-04);border-color:var(--line);color:var(--text);font-weight:700}
+.panel{background:var(--ink-3);border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-height:380px;transition:box-shadow .25s}
+.panel h3{font-size:18px;font-weight:700;margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;color:var(--faint);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--line);transition:background-color .15s}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--tint-02)}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+.heat div{height:34px;border-radius:7px}
+.heat-legend{display:flex;gap:14px;margin-top:14px;font-size:12px;color:var(--muted);align-items:center}
+.heat-legend span{display:inline-flex;align-items:center;gap:6px}
+.heat-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+@media(max-width:1000px){
+  .stage-grid{grid-template-columns:1fr;gap:24px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;gap:8px}
+  .rail-item{padding:8px 10px;background:var(--ink-3);border:1px solid var(--line);border-radius:999px}
+  .rail-item .label{display:none}
+  .frame-col{position:static;order:-1}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .dash-body{grid-template-columns:1fr}
+  .tabs{position:static;flex-direction:row;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#B7F24C"/></svg></div>
+      <div class="name">ITM <span>Green</span> Mobility</div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html#platforms">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to portals
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Web portal · Integration System</span>
+    <h1>Payment IFS — live simulation</h1>
+    <p>The payment gateway behind every ITM Green Mobility solution. One integration system, acting as the payments provider — with a full view of transactions, methods, settlements, disputes and provider health across every pillar.</p>
+  </div>
+</header>
+
+<!-- ONBOARDING -->
+<section class="stage" id="onboardStage">
+  <div class="wrap stage-grid">
+    <nav class="rail" id="rail"></nav>
+    <div class="value-card">
+      <span class="value-tag" id="valueTag">Onboarding</span>
+      <h2 id="valueTitle"></h2>
+      <p id="valueText"></p>
+      <div class="value-checks" id="valueChecks"></div>
+      <div class="stage-actions">
+        <button class="btn btn-primary" id="ctaBtn">Continue</button>
+      </div>
+    </div>
+    <div class="frame-col">
+      <div class="browser">
+        <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">payments.itmgreenmobility.com</div></div>
+        <div class="browser-body" id="frameBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="dash" id="dashStage">
+  <div class="wrap">
+    <div class="dash-guide">
+      <div class="gi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v.01M11 12h1v5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div class="dash-guide-steps">
+        <div><b>1. Pick a tab</b>Transactions, Methods, Settlements, Disputes or Providers.</div>
+        <div><b>2. Scan the KPIs</b>Top row always shows today's payment-wide numbers.</div>
+        <div><b>3. Drill in</b>Each panel's table is the detail behind the summary.</div>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="../../index.html#platforms">Back to home</a>
+    </div>
+
+    <div class="dash-topbar">
+      <h2>Good morning, Payments team</h2>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><b>2,140,000f</b><small>Volume processed today</small><div class="delta">▲ 9% vs yesterday</div></div>
+      <div class="kpi"><b>1,318</b><small>Transactions today</small><div class="delta">▲ 7%</div></div>
+      <div class="kpi"><b>99.2%</b><small>Success rate</small><div class="delta">stable</div></div>
+      <div class="kpi"><b>5</b><small>Payment methods live</small><div class="delta">0 outages</div></div>
+    </div>
+
+    <div class="dash-body">
+      <div class="tabs" id="tabs"></div>
+      <div class="panel" id="panel"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+var ONBOARD = [
+  {
+    rail:'Verify access', tag:'Onboarding', title:'Verify your integration access',
+    text:'Single sign-on tied to your ITM Holding identity — payments access is tightly scoped and audited.',
+    cta:'Verify access',
+    frame:function(){ return '\
+      <div class="b-fade">\
+        <div class="b-h">Sign in to Payment IFS</div>\
+        <div class="b-sub">Single sign-on · ITM Holding identity</div>\
+        <div class="b-field"><label>Account</label><div class="val">payments@itmholding.bj</div></div>\
+        <button class="b-btn" id="fAction">Verify access</button>\
+      </div>'; }
+  },
+  {
+    rail:'Connect providers', tag:'Onboarding', title:'Providers already connected',
+    text:'Mobile money, cards, QR and corporate wallets — all wired into one integration layer.',
+    cta:'Confirm providers',
+    checks:['Access verified via SSO'],
+    frame:function(){ return '\
+      <div class="b-fade">\
+        <div class="b-h">Connected providers</div>\
+        <div class="b-field"><label>Mobile money</label><div class="val">MTN MoMo, Moov Money</div></div>\
+        <div class="b-field"><label>Other rails</label><div class="val">Cards, QR, Corporate wallet</div></div>\
+        <button class="b-btn" id="fAction">Confirm providers</button>\
+      </div>'; }
+  },
+  {
+    rail:'Dashboard ready', tag:'Onboarding', title:'Your payment gateway is ready',
+    text:'Every transaction, across every pillar, settling and reconciling in one place.',
+    cta:'Enter dashboard',
+    checks:['Access verified via SSO','5 providers connected'],
+    frame:function(){ return '\
+      <div class="b-fade b-center">\
+        <div class="b-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>\
+        <div class="b-h">Access granted</div>\
+        <div class="b-sub">Ready to enter the payment gateway</div>\
+      </div>'; }
+  }
+];
+
+var TABS = [
+  { label:'Transactions', render:function(){ return '\
+    <h3>Live transactions — across every pillar</h3>\
+    <table class="tbl"><tr><th>Reference</th><th>Pillar</th><th>Method</th><th>Amount</th><th>Status</th></tr>\
+    <tr><td>TXN-88213</td><td>Green Ride</td><td>Mobile money</td><td>2,400f</td><td style="color:var(--emerald)">Settled</td></tr>\
+    <tr><td>TXN-88212</td><td>Green Charge</td><td>Wallet</td><td>3,725f</td><td style="color:var(--emerald)">Settled</td></tr>\
+    <tr><td>TXN-88211</td><td>Green Business</td><td>Corporate wallet</td><td>18,000f</td><td style="color:var(--sky)">Pending</td></tr>\
+    <tr><td>TXN-88210</td><td>Green Rental</td><td>Card</td><td>14,400f</td><td style="color:var(--emerald)">Settled</td></tr>\
+    <tr><td>TXN-88209</td><td>Green Fleet</td><td>Mobile money</td><td>9,500f</td><td style="color:var(--amber)">Failed — retrying</td></tr>\
+    </table>'; } },
+  { label:'Payment methods', render:function(){ return '\
+    <h3>Volume by method — today</h3>\
+    <table class="tbl"><tr><th>Method</th><th>Volume</th><th>Share</th><th>Status</th></tr>\
+    <tr><td>MTN MoMo</td><td>980,000f</td><td>46%</td><td style="color:var(--emerald)">Operational</td></tr>\
+    <tr><td>Moov Money</td><td>540,000f</td><td>25%</td><td style="color:var(--emerald)">Operational</td></tr>\
+    <tr><td>Cards</td><td>380,000f</td><td>18%</td><td style="color:var(--emerald)">Operational</td></tr>\
+    <tr><td>Corporate wallet</td><td>190,000f</td><td>9%</td><td style="color:var(--emerald)">Operational</td></tr>\
+    <tr><td>QR / prepaid</td><td>50,000f</td><td>2%</td><td style="color:var(--emerald)">Operational</td></tr>\
+    </table>'; } },
+  { label:'Settlements', render:function(){ return '\
+    <h3>Payouts — today</h3>\
+    <table class="tbl"><tr><th>Recipient</th><th>Type</th><th>Amount</th><th>Status</th></tr>\
+    <tr><td>Julien T.</td><td>Driver earnings</td><td>14,200f</td><td style="color:var(--emerald)">Paid</td></tr>\
+    <tr><td>Cotonou Central Station</td><td>Station revenue</td><td>52,500f</td><td style="color:var(--emerald)">Paid</td></tr>\
+    <tr><td>ITM Holding</td><td>Corporate invoice</td><td>1,860,000f</td><td style="color:var(--sky)">Scheduled — 12 days</td></tr>\
+    <tr><td>Aïcha D.</td><td>Driver earnings</td><td>13,600f</td><td style="color:var(--emerald)">Paid</td></tr>\
+    </table>'; } },
+  { label:'Disputes & refunds', render:function(){ return '\
+    <h3>Disputes &amp; refunds</h3>\
+    <table class="tbl"><tr><th>Reference</th><th>Reason</th><th>Amount</th><th>Status</th></tr>\
+    <tr><td>DSP-2201</td><td>Duplicate charge</td><td>2,400f</td><td style="color:var(--amber)">Under review</td></tr>\
+    <tr><td>DSP-2198</td><td>Trip not completed</td><td>1,800f</td><td style="color:var(--emerald)">Refunded</td></tr>\
+    <tr><td>DSP-2190</td><td>Wrong fare</td><td>600f</td><td style="color:var(--emerald)">Refunded</td></tr>\
+    </table>'; } },
+  { label:'Providers', render:function(){ return '\
+    <h3>Provider &amp; integration health</h3>\
+    <table class="tbl"><tr><th>Provider</th><th>Role</th><th>Uptime (30d)</th><th>Status</th></tr>\
+    <tr><td>MTN MoMo API</td><td>Mobile money</td><td>99.8%</td><td style="color:var(--emerald)">Connected</td></tr>\
+    <tr><td>Moov Money API</td><td>Mobile money</td><td>99.6%</td><td style="color:var(--emerald)">Connected</td></tr>\
+    <tr><td>Card processor</td><td>Cards</td><td>99.9%</td><td style="color:var(--emerald)">Connected</td></tr>\
+    <tr><td>Corporate wallet ledger</td><td>Internal</td><td>100%</td><td style="color:var(--emerald)">Connected</td></tr>\
+    </table>'; } }
+];
+
+/* onboarding engine */
+var idx=0, rail=document.getElementById('rail'), frameBody=document.getElementById('frameBody');
+var valueTag=document.getElementById('valueTag'), valueTitle=document.getElementById('valueTitle'),
+    valueText=document.getElementById('valueText'), valueChecks=document.getElementById('valueChecks'), ctaBtn=document.getElementById('ctaBtn');
+
+function buildRail(){ rail.innerHTML = ONBOARD.map(function(s,i){ return '<div class="rail-item" data-i="'+i+'"><div class="dot">'+(i+1)+'</div><div class="label">'+s.rail+'</div></div>'; }).join(''); }
+function renderChecks(list){
+  valueChecks.innerHTML = (list||[]).map(function(t){ return '<div class="vc"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>'+t+'</span></div>'; }).join('');
+  requestAnimationFrame(function(){ valueChecks.querySelectorAll('.vc').forEach(function(el,i){ setTimeout(function(){el.classList.add('show');}, i*120); }); });
+}
+function updateRailStates(){
+  rail.querySelectorAll('.rail-item').forEach(function(el){
+    var i=+el.dataset.i; el.classList.remove('active','done');
+    if(i<idx) el.classList.add('done'); else if(i===idx) el.classList.add('active');
+  });
+  rail.querySelectorAll('.rail-item.done .dot').forEach(function(d){ d.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'; });
+}
+function renderOnboard(){
+  var step=ONBOARD[idx];
+  updateRailStates();
+  valueTag.textContent=step.tag; valueTitle.textContent=step.title; valueText.textContent=step.text;
+  renderChecks(step.checks);
+  frameBody.innerHTML=step.frame();
+  var fAction=document.getElementById('fAction');
+  if(fAction) fAction.addEventListener('click', advanceOnboard);
+  ctaBtn.textContent=step.cta;
+}
+function advanceOnboard(){
+  if(idx < ONBOARD.length-1){ idx++; renderOnboard(); }
+  else { enterDashboard(); }
+}
+ctaBtn.addEventListener('click', advanceOnboard);
+buildRail(); renderOnboard();
+
+function enterDashboard(){
+  document.getElementById('onboardStage').style.display='none';
+  var dash=document.getElementById('dashStage'); dash.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* tabs */
+var tabsEl=document.getElementById('tabs'), panelEl=document.getElementById('panel'), tabIdx=0;
+function buildTabs(){
+  tabsEl.innerHTML = TABS.map(function(t,i){ return '<button class="tab-btn'+(i===0?' active':'')+'" data-i="'+i+'">'+t.label+'</button>'; }).join('');
+  tabsEl.querySelectorAll('.tab-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      tabIdx = +b.dataset.i;
+      tabsEl.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      renderTab();
+    });
+  });
+}
+function renderTab(){ panelEl.innerHTML = '<div class="b-fade">'+TABS[tabIdx].render()+'</div>'; }
+buildTabs(); renderTab();
+
+(function(){
+  var html=document.documentElement, metaColor=document.getElementById('metaThemeColor');
+  var LIGHT_COLOR='#FFFFFF', DARK_COLOR='#071A12';
+  function isDark(){return html.getAttribute('data-theme')==='dark';}
+  function syncMeta(){if(metaColor)metaColor.setAttribute('content',isDark()?DARK_COLOR:LIGHT_COLOR);}
+  function setTheme(dark){
+    if(dark){html.setAttribute('data-theme','dark');}else{html.removeAttribute('data-theme');}
+    try{localStorage.setItem('itm-theme',dark?'dark':'light');}catch(e){}
+    syncMeta();
+  }
+  syncMeta();
+  document.getElementById('themeToggle').addEventListener('click', function(){ setTheme(!isDark()); });
+})();
+</script>
+</body>
+</html>
