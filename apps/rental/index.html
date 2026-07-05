@@ -283,11 +283,21 @@ var STEPS = [
         <div class="p-searching">Connecting to vehicle…</div>\
       </div>'; },
     phoneAfter:function(){ return '\
-      <div class="p-fade p-center">\
-        <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M17 10V7a5 5 0 0 0-10 0v3M5 10h14v10H5z" stroke="currentColor" stroke-width="2" fill="none"/></svg></div>\
-        <div class="p-h">Unlocked</div>\
-        <div class="p-sub">Bay 12 · Green EV Hatchback</div>\
-        <button class="p-btn" id="pAction" style="margin-top:18px">Start rental</button>\
+      <div class="p-fade">\
+        <div class="p-center" style="flex:none;padding:6px 0 14px">\
+          <div class="p-badge-ok"><svg viewBox="0 0 24 24" fill="none"><path d="M17 10V7a5 5 0 0 0-10 0v3M5 10h14v10H5z" stroke="currentColor" stroke-width="2" fill="none"/></svg></div>\
+          <div class="p-h">Unlocked</div>\
+          <div class="p-sub">Bay 12 · Green EV Hatchback</div>\
+        </div>\
+        <div class="p-chip-row">\
+          <span class="p-chip ok">✓ Doors unlocked</span>\
+          <span class="p-chip ok">✓ Digital key active</span>\
+        </div>\
+        <div class="p-stat-row">\
+          <div class="p-stat"><b>92%</b><small>Battery charged</small></div>\
+          <div class="p-stat"><b>318 km</b><small>Range available</small></div>\
+        </div>\
+        <button class="p-btn" id="pAction">Start rental</button>\
       </div>'; }
   },
   {
