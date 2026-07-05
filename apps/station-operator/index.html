@@ -60,7 +60,7 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:14px 0 10px}
 .page-head p{color:var(--muted);max-width:600px;font-size:16px}
 .stage{padding:36px 0 90px}
-.stage-grid{display:grid;grid-template-columns:280px 1fr 340px;gap:28px;align-items:start}
+.stage-grid{display:grid;grid-template-columns:340px 230px 1fr;gap:26px;align-items:start}
 .rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:90px}
 .rail-item{display:flex;align-items:flex-start;gap:12px;padding:11px 6px;border-radius:12px;transition:.25s}
 .rail-item .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--faint);background:var(--ink-3);transition:.25s}
@@ -87,8 +87,15 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
 .btn[disabled]{opacity:.5;pointer-events:none}
 .phone-col{position:sticky;top:90px;display:flex;justify-content:center}
-.phone{width:320px;height:600px;border-radius:26px;background:linear-gradient(160deg,#182a20,#0c1810);border:8px solid #0a1710;box-shadow:var(--shadow);position:relative;overflow:hidden}
-html[data-theme="dark"] .phone{border-color:#000}
+.rail-col{position:sticky;top:90px}
+.phone{width:300px;height:620px;border-radius:52px;background:linear-gradient(160deg,#3a3a3c,#1c1c1e);border:6px solid #0a0a0b;box-shadow:var(--shadow),inset 0 0 0 2px rgba(255,255,255,.07);position:relative;overflow:hidden;flex:0 0 auto}
+.phone::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:100px;height:30px;background:#000;border-radius:18px;z-index:6}
+.phone-frame{position:relative;display:inline-block}
+.phone-btn{position:absolute;background:#0a0a0b;z-index:1}
+.btn-mute{left:-3px;top:108px;width:3px;height:22px;border-radius:2px 0 0 2px}
+.btn-vol-up{left:-3px;top:146px;width:3px;height:44px;border-radius:2px 0 0 2px}
+.btn-vol-down{left:-3px;top:200px;width:3px;height:44px;border-radius:2px 0 0 2px}
+.btn-power{right:-3px;top:170px;width:3px;height:70px;border-radius:0 2px 2px 0}
 .phone-screen{position:absolute;inset:0;background:linear-gradient(180deg,#fbfdf9,#eef4e8);display:flex;flex-direction:column}
 .p-status{display:flex;justify-content:space-between;align-items:center;padding:16px 22px 6px;font-size:12px;font-weight:600;color:#123D2A;font-family:'JetBrains Mono',monospace}
 .p-body{flex:1;padding:16px 22px 26px;display:flex;flex-direction:column;overflow:hidden auto}
@@ -133,7 +140,7 @@ html[data-theme="dark"] .phone{border-color:#000}
   .rail-item .label{display:none}
   .phone-col{position:static;order:-1}
 }
-@media(max-width:480px){ .phone{width:280px;height:520px} }
+@media(max-width:480px){ .phone{width:260px;height:540px} }
 </style>
 </head>
 <body>
@@ -167,6 +174,20 @@ html[data-theme="dark"] .phone{border-color:#000}
 
 <section class="stage">
   <div class="wrap stage-grid">
+    <div class="phone-col">
+      <div class="phone-frame">
+        <div class="phone-btn btn-mute"></div>
+        <div class="phone-btn btn-vol-up"></div>
+        <div class="phone-btn btn-vol-down"></div>
+        <div class="phone-btn btn-power"></div>
+        <div class="phone">
+        <div class="phone-screen">
+          <div class="p-status"><span>9:41</span><span>●●● Green Ops</span><span>Wi-Fi</span></div>
+          <div class="p-body" id="phoneBody"></div>
+        </div>
+      </div>
+      </div>
+    </div>
     <nav class="rail" id="rail"></nav>
     <div class="value-card">
       <span class="value-tag" id="valueTag">Onboarding</span>
@@ -177,14 +198,6 @@ html[data-theme="dark"] .phone{border-color:#000}
         <button class="btn btn-primary" id="ctaBtn">Continue</button>
         <button class="btn btn-ghost" id="restartBtn" style="display:none">Restart demo</button>
         <a class="btn btn-ghost" id="backAppsBtn" href="../../index.html#platforms" style="display:none">Back to mobile apps</a>
-      </div>
-    </div>
-    <div class="phone-col">
-      <div class="phone">
-        <div class="phone-screen">
-          <div class="p-status"><span>9:41</span><span>●●● Green Ops</span><span>Wi-Fi</span></div>
-          <div class="p-body" id="phoneBody"></div>
-        </div>
       </div>
     </div>
   </div>
