@@ -377,6 +377,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
 .plat-group .glabel .ln{flex:1;height:1px;background:var(--line)}
 .plat-group .glabel .ct{font-size:12px;color:var(--faint)}
 .app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.app-grid.four{grid-template-columns:repeat(4,1fr)}
 .app-card{position:relative;padding:24px;border-radius:20px;border:1px solid var(--line);
   background:linear-gradient(170deg,var(--ink-3),var(--ink-2));transition:transform .35s,border-color .35s;overflow:hidden}
 .app-card:hover{transform:translateY(-6px);border-color:var(--ac,var(--volt))}
@@ -417,7 +418,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
   .gallery{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px}
   .gtile.big{grid-row:auto;grid-column:1 / span 2}
   .impact-grid{grid-template-columns:1fr;gap:30px}
-  .app-grid{grid-template-columns:1fr 1fr}
+  .app-grid,.app-grid.four{grid-template-columns:1fr 1fr}
   .foot-grid{grid-template-columns:1fr 1fr}
   .stats .grid{grid-template-columns:1fr 1fr}
   .stat:nth-child(2){border-right:none}
@@ -427,11 +428,17 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
   .nav-links{display:none}
   .nav-cta .btn-ghost{display:none}
   .menu-btn{display:block}
+  .brand .sub{display:none}
+}
+@media(max-width:430px){
+  .nav-cta .btn-primary{display:none}
+}
+@media(max-width:640px){
   .mobile-menu{position:fixed;inset:64px 0 auto 0;z-index:99;background:var(--ink-2);border-bottom:1px solid var(--line);
     padding:20px 24px;display:none;flex-direction:column;gap:4px}
   .mobile-menu.open{display:flex;animation:fade .3s}
   .mobile-menu a{padding:13px 0;border-bottom:1px solid var(--line);color:var(--text);font-weight:500}
-  .pillars,.services,.ind-grid,.corridor,.gallery,.app-grid,.foot-grid,.impact-list{grid-template-columns:1fr}
+  .pillars,.services,.ind-grid,.corridor,.gallery,.app-grid,.app-grid.four,.foot-grid,.impact-list{grid-template-columns:1fr}
   .gtile.big{grid-column:auto}
   .hero-trust{gap:18px}
   .block{padding:64px 0}
@@ -533,7 +540,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
       <div class="hero-trust">
         <div class="t"><b>4</b><small>Business pillars</small></div>
         <div class="t"><b>100%</b><small>Electric fleet</small></div>
-        <div class="t"><b>6</b><small>Purpose-built apps</small></div>
+        <div class="t"><b>8</b><small>Purpose-built apps</small></div>
         <div class="t"><b>0g</b><small>CO₂ per ride</small></div>
       </div>
     </div>
@@ -607,7 +614,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
   <div class="wrap"><div class="grid">
     <div class="stat reveal"><b data-count="4">0</b><small>Charging stations · Phase 1</small></div>
     <div class="stat reveal"><b data-count="8">0</b><small>Cars per station minimum</small></div>
-    <div class="stat reveal"><b data-count="6">0</b><small>Apps &amp; portals</small></div>
+    <div class="stat reveal"><b data-count="8">0</b><small>Apps &amp; portals</small></div>
     <div class="stat reveal"><b data-count="13">0</b><small>User journeys mapped</small></div>
   </div></div>
 </section>
@@ -822,7 +829,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
     <div class="reveal in">
       <span class="eyebrow">Platforms &amp; Apps</span>
       <h1>The complete <span class="g">ITM Green Mobility</span> platform.</h1>
-      <p>Six purpose-built experiences — three mobile apps and three web portals — plus the public website, all connected to one backend. Every user type gets an independent, end-to-end journey.</p>
+      <p>Eight purpose-built experiences — four mobile apps and four web portals — plus the public website and payment ecosystem, all connected to one backend. Every user type gets an independent, end-to-end journey.</p>
     </div>
   </div>
 
@@ -830,7 +837,7 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
     <!-- MOBILE APPS -->
     <div class="plat-group reveal in">
       <div class="glabel"><h3>Mobile apps</h3><div class="ln"></div><span class="ct">Android-first · iOS to follow</span></div>
-      <div class="app-grid">
+      <div class="app-grid four">
         <div class="app-card" style="--ac:#B7F24C">
           <div class="platform-badge">Rider</div>
           <div class="top"><div class="ai"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7" stroke="currentColor" stroke-width="1.8"/></svg></div><span class="tag">Mobile</span></div>
@@ -854,6 +861,14 @@ footer{padding:64px 0 34px;border-top:1px solid var(--line);background:var(--ink
           <p>Run charging sessions, confirm vehicles and track kWh and revenue at the stand.</p>
           <div class="feats"><span>Sessions</span><span>kWh</span><span>Revenue</span><span>Queue</span><span>Faults</span></div>
           <a class="btn btn-primary open" href="javascript:void(0)" onclick="toast('Station operator app — Phase 1 stations')">Open Operator App</a>
+        </div>
+        <div class="app-card" style="--ac:#7C6CF0">
+          <div class="platform-badge">Rental</div>
+          <div class="top"><div class="ai"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="tag">Mobile</span></div>
+          <h4>Rental App</h4>
+          <p>Browse the fleet, book by the hour or day, unlock the vehicle and return with a digital inspection.</p>
+          <div class="feats"><span>Browse fleet</span><span>Book</span><span>Digital unlock</span><span>Deposit</span><span>Return &amp; inspect</span></div>
+          <a class="btn btn-primary open" href="javascript:void(0)" onclick="toast('Rental app — Phase 1 fleet')">Open Rental App</a>
         </div>
       </div>
     </div>
