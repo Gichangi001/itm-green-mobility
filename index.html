@@ -160,7 +160,9 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .theme-toggle-row span{color:var(--text);font-weight:500;font-size:14.5px}
 
 /* ---------------- HERO ---------------- */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:130px 0 60px;overflow:hidden}
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:130px 0 60px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0) 30%,rgba(15,23,31,.12)),url('assets/hero-benin.jpg') center 68%/cover no-repeat}
+html[data-theme="dark"] .hero{background:none}
 .sky-grad{
   position:absolute;inset:0;z-index:0;
   background:
@@ -179,10 +181,20 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .skyline{position:absolute;bottom:24%;left:0;right:0;height:180px;z-index:1;opacity:.55}
 .hero-glow{position:absolute;bottom:0;left:0;right:0;height:40%;z-index:1;
   background:linear-gradient(180deg,transparent, rgba(7,26,18,.9) 60%, #071A12)}
-/* hero keeps its cinematic dusk-over-Cotonou look in both themes — pin its text/glass locally */
-.hero{--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--glass:rgba(9,28,19,.55);color:var(--text)}
+/* dusk-over-Cotonou scene is dark-mode only; light mode uses the Benin beach photo instead */
+.sky-grad,.stars,.sun,.skyline,.hero-glow,.hero-art{display:none}
+html[data-theme="dark"] .sky-grad,html[data-theme="dark"] .stars,html[data-theme="dark"] .sun,
+html[data-theme="dark"] .skyline,html[data-theme="dark"] .hero-glow,html[data-theme="dark"] .hero-art{display:block}
+.hero{color:var(--text)}
+html[data-theme="dark"] .hero{--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--glass:rgba(9,28,19,.55);}
 
-.hero-inner{position:relative;z-index:5;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;width:100%}
+.hero-copy{background:rgba(255,255,255,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.7);border-radius:28px;padding:38px 42px;max-width:640px;
+  box-shadow:0 24px 60px -24px rgba(15,23,31,.25)}
+html[data-theme="dark"] .hero-copy{background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:none;padding:0;max-width:none}
+
+.hero-inner{position:relative;z-index:5;display:grid;grid-template-columns:1fr;gap:40px;align-items:center;width:100%}
+html[data-theme="dark"] .hero-inner{grid-template-columns:1.05fr .95fr}
 .hero h1{font-size:clamp(40px,6.2vw,74px);font-weight:800;margin:20px 0 18px}
 .hero h1 .g{background:var(--grad-hero-h1);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p.lead{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:540px;margin-bottom:30px}
