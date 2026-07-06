@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
+<meta name="theme-color" content="#071A12" id="metaThemeColor" />
 <script>
 /* Apply saved theme before first paint. Default is always light mode. */
 (function(){try{
-  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
+  if(localStorage.getItem('itm-theme')!=='light'){document.documentElement.setAttribute('data-theme','dark');}
 }catch(e){}})();
 </script>
 <title>ITM Green Mobility — Benin's Electric Mobility Ecosystem</title>
@@ -180,7 +180,7 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .hero-glow{position:absolute;bottom:0;left:0;right:0;height:40%;z-index:1;
   background:linear-gradient(180deg,transparent, rgba(7,26,18,.9) 60%, #071A12)}
 /* hero keeps its cinematic dusk-over-Cotonou look in both themes — pin its text/glass locally */
-.hero{--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--glass:rgba(9,28,19,.55);}
+.hero{--text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--glass:rgba(9,28,19,.55);color:var(--text)}
 
 .hero-inner{position:relative;z-index:5;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;width:100%}
 .hero h1{font-size:clamp(40px,6.2vw,74px);font-weight:800;margin:20px 0 18px}
@@ -351,7 +351,7 @@ section{position:relative}
 
 /* impact */
 .impact{background:linear-gradient(160deg,#0b2c1d,#071c12);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  --text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--tint-02:rgba(255,255,255,.02);--line:rgba(183,242,76,.14);}
+  --text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--tint-02:rgba(255,255,255,.02);--line:rgba(183,242,76,.14);color:var(--text)}
 .impact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
 .impact-list{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .im{padding:22px;border-radius:16px;border:1px solid var(--line);background:var(--tint-02)}
@@ -362,7 +362,7 @@ section{position:relative}
 .cta-band{margin:0 0 0;padding:0}
 .cta-inner{position:relative;border-radius:30px;overflow:hidden;border:1px solid var(--line);
   background:linear-gradient(120deg,#0e3a26,#0a2417);padding:64px 48px;text-align:center;
-  --text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--tint-04:rgba(255,255,255,.04);--line:rgba(183,242,76,.14);}
+  --text:#EAF3EC;--muted:#9DB5A6;--faint:#5F7A6B;--volt-text:#B7F24C;--tint-04:rgba(255,255,255,.04);--line:rgba(183,242,76,.14);color:var(--text)}
 .cta-inner::before{content:"";position:absolute;inset:0;opacity:.5;
   background:radial-gradient(50% 120% at 20% 0%,rgba(183,242,76,.25),transparent),radial-gradient(50% 120% at 90% 100%,rgba(88,199,242,.22),transparent)}
 .cta-inner h2{position:relative;font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:14px}
