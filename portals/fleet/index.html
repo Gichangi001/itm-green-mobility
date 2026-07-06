@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#071A12" id="metaThemeColor" />
+<meta name="theme-color" content="#FFFFFF" id="metaThemeColor" />
 <script>
 (function(){try{
-  if(localStorage.getItem('itm-theme')!=='light'){document.documentElement.setAttribute('data-theme','dark');}
+  if(localStorage.getItem('itm-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}
 }catch(e){}})();
 </script>
 <title>Fleet Dashboard — ITM Green Mobility</title>
@@ -81,10 +81,13 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .value-checks .vc .tick svg{width:12px;height:12px}
 .stage-actions{margin-top:auto;padding-top:26px;display:flex;gap:12px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap}
+.btn:hover{animation:btnShake .4s ease}
+@keyframes btnShake{0%{transform:translateY(-2px) rotate(0deg)}20%{transform:translateY(-2px) rotate(-3deg)}40%{transform:translateY(-2px) rotate(3deg)}60%{transform:translateY(-2px) rotate(-2deg)}80%{transform:translateY(-2px) rotate(2deg)}100%{transform:translateY(-2px) rotate(0deg)}}
+@media(prefers-reduced-motion:reduce){.btn:hover{animation:none}}
 .btn-primary{background:linear-gradient(120deg,var(--volt),var(--emerald));color:#052012;box-shadow:0 12px 26px -8px rgba(183,242,76,.45)}
-.btn-primary:hover{transform:translateY(-2px)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 36px -8px rgba(183,242,76,.6),0 0 24px 5px rgba(183,242,76,.35)}
 .btn-ghost{background:var(--tint-04);border-color:var(--line);color:var(--text)}
-.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px)}
+.btn-ghost:hover{border-color:var(--volt-text);transform:translateY(-2px);box-shadow:0 0 20px 3px rgba(52,211,153,.25)}
 .btn-sm{padding:9px 16px;font-size:13.5px}
 .btn[disabled]{opacity:.5;pointer-events:none}
 
